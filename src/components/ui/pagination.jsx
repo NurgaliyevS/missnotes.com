@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { buttonVariants } from "@/components/ui/button";
 var Pagination = function (_a) {
     var className = _a.className, props = __rest(_a, ["className"]);

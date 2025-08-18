@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import { GripVertical } from "lucide-react";
 import * as ResizablePrimitive from "react-resizable-panels";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var ResizablePanelGroup = function (_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
     return (<ResizablePrimitive.PanelGroup className={cn("flex h-full w-full data-[panel-group-direction=vertical]:flex-col", className)} {...props}/>);

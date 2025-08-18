@@ -12,7 +12,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import * as React from "react";
 import { Command as CommandPrimitive } from "cmdk";
 import { Search } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 var Command = React.forwardRef(function (_a, ref) {
     var className = _a.className, props = __rest(_a, ["className"]);

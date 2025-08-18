@@ -12,7 +12,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var Accordion = AccordionPrimitive.Root;
 var AccordionItem = React.forwardRef(function (_a, ref) {
     var className = _a.className, props = __rest(_a, ["className"]);

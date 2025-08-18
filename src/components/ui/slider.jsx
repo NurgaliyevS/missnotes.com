@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var Slider = React.forwardRef(function (_a, ref) {
     var className = _a.className, props = __rest(_a, ["className"]);
     return (<SliderPrimitive.Root ref={ref} className={cn("relative flex w-full touch-none select-none items-center", className)} {...props}>

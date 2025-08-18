@@ -12,7 +12,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { cva } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var labelVariants = cva("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70");
 var Label = React.forwardRef(function (_a, ref) {
     var className = _a.className, props = __rest(_a, ["className"]);

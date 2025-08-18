@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from "react";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var ScrollArea = React.forwardRef(function (_a, ref) {
     var className = _a.className, children = _a.children, props = __rest(_a, ["className", "children"]);
     return (<ScrollAreaPrimitive.Root ref={ref} className={cn("relative overflow-hidden", className)} {...props}>

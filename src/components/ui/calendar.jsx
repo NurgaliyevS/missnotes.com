@@ -23,7 +23,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { buttonVariants } from "@/components/ui/button";
 function Calendar(_a) {
     var className = _a.className, classNames = _a.classNames, _b = _a.showOutsideDays, showOutsideDays = _b === void 0 ? true : _b, props = __rest(_a, ["className", "classNames", "showOutsideDays"]);

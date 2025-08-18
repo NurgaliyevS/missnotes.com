@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from "react";
 import * as RechartsPrimitive from "recharts";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 // Format: { THEME_NAME: CSS_SELECTOR }
 var THEMES = { light: "", dark: ".dark" };
 var ChartContext = React.createContext(null);

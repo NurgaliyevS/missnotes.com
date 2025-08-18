@@ -9,7 +9,7 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 function Skeleton(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
     return (<div className={cn("animate-pulse rounded-md bg-muted", className)} {...props}/>);

@@ -12,7 +12,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import * as React from "react";
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
 import { Check, ChevronRight, Circle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var MenubarMenu = MenubarPrimitive.Menu;
 var MenubarGroup = MenubarPrimitive.Group;
 var MenubarPortal = MenubarPrimitive.Portal;

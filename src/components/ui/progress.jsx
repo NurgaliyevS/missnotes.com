@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from "react";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var Progress = React.forwardRef(function (_a, ref) {
     var className = _a.className, value = _a.value, props = __rest(_a, ["className", "value"]);
     return (<ProgressPrimitive.Root ref={ref} className={cn("relative h-4 w-full overflow-hidden rounded-full bg-secondary", className)} {...props}>

@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from "react";
 import * as ToggleGroupPrimitive from "@radix-ui/react-toggle-group";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { toggleVariants } from "@/components/ui/toggle";
 var ToggleGroupContext = React.createContext({
     size: "default",

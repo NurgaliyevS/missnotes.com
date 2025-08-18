@@ -23,7 +23,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { Controller, FormProvider, useFormContext, } from "react-hook-form";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { Label } from "@/components/ui/label";
 var Form = FormProvider;
 var FormFieldContext = React.createContext({});

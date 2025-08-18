@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from "react";
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var HoverCard = HoverCardPrimitive.Root;
 var HoverCardTrigger = HoverCardPrimitive.Trigger;
 var HoverCardContent = React.forwardRef(function (_a, ref) {

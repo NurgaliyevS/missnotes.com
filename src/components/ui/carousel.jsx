@@ -23,7 +23,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import * as React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 import { Button } from "@/components/ui/button";
 var CarouselContext = React.createContext(null);
 function useCarousel() {

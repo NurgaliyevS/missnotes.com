@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { buffer } from "micro";
 import User from "@/backend/user";
 import connectMongoDB from "@/backend/mongodb";
-import sendTelegramNotification from "@/src/lib/sendTelegramNotification";
+import sendTelegramNotification from "@/utils/sendTelegramNotification";
 
 // Use test key for local development, production key for production
 const isDevelopment = process.env.NODE_ENV === 'development';

@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var Tabs = TabsPrimitive.Root;
 var TabsList = React.forwardRef(function (_a, ref) {
     var className = _a.className, props = __rest(_a, ["className"]);

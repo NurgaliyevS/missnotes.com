@@ -12,7 +12,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { ChevronRight, MoreHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var Breadcrumb = React.forwardRef(function (_a, ref) {
     var props = __rest(_a, []);
     return <nav ref={ref} aria-label="breadcrumb" {...props}/>;

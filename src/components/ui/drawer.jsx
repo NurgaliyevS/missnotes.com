@@ -11,7 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/utils";
 var Drawer = function (_a) {
     var _b = _a.shouldScaleBackground, shouldScaleBackground = _b === void 0 ? true : _b, props = __rest(_a, ["shouldScaleBackground"]);
     return (<DrawerPrimitive.Root shouldScaleBackground={shouldScaleBackground} {...props}/>);
