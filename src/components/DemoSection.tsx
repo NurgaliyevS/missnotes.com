@@ -36,15 +36,11 @@ export const DemoSection = () => {
               3 clicks
             </span>
           </h2>
-          <div className="w-16 h-1 bg-gradient-primary mx-auto rounded-full"></div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8 items-stretch max-w-6xl mx-auto">
           {/* Steps Column */}
           <div className="relative">
-            {/* Connecting Line */}
-            <div className="absolute left-8 top-16 bottom-16 w-0.5 bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20 hidden lg:block"></div>
-            
             <div className="space-y-6">
               {steps.map((step, index) => (
                 <div
@@ -93,7 +89,7 @@ export const DemoSection = () => {
           <div className="relative inline-block">
             <div className="absolute inset-0 bg-gradient-primary rounded-xl blur-xl opacity-30 transform scale-110"></div>
             <Button variant="hero" size="lg" className="relative text-lg px-8 py-4 shadow-glow hover:shadow-large transition-all duration-300">
-              Get Started Free
+              Start 7 Day Free Trial
             </Button>
           </div>
         </div>

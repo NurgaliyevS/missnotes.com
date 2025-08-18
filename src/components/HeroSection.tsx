@@ -20,7 +20,7 @@ export const HeroSection = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Button variant="hero" size="lg" className="text-lg px-8 py-4">
-                Try Free – 3 Meetings
+                Start 7 Day Free Trial
               </Button>
               <Button variant="outline" size="lg" className="text-lg px-8 py-4">
                 See Example Notes

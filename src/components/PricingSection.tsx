@@ -4,19 +4,6 @@ import { Check } from "lucide-react";
 export const PricingSection = () => {
   const plans = [
     {
-      name: "Free",
-      price: "$0",
-      period: "forever",
-      description: "Perfect for trying out Miss Notes",
-      features: [
-        "3 meetings per month",
-        "Basic summaries",
-        "Email support"
-      ],
-      cta: "Get Started Free",
-      popular: false
-    },
-    {
       name: "Pro",
       price: "$7",
       period: "per month",
@@ -27,7 +14,7 @@ export const PricingSection = () => {
         "Custom branding",
         "Priority support"
       ],
-      cta: "Start Pro Trial",
+      cta: "Start 7 Day Free Trial",
       popular: true
     },
     {
@@ -41,7 +28,7 @@ export const PricingSection = () => {
         "Team analytics",
         "Custom integrations"
       ],
-      cta: "Contact Sales",
+      cta: "Start 7 Day Free Trial",
       popular: false
     }
   ];
@@ -58,14 +45,14 @@ export const PricingSection = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid lg:grid-cols-2 gap-6 max-w-2xl mx-auto">
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative bg-card p-8 rounded-2xl shadow-soft border animate-fade-up hover:shadow-medium transition-all duration-300 ${
+              className={`max-w-xs relative bg-card p-8 rounded-2xl shadow-soft border animate-fade-up hover:shadow-medium transition-all duration-300 ${
                 plan.popular 
                   ? "border-primary shadow-glow scale-105" 
-                  : "border-border/50"
+                  : "border-secondary shadow-soft"
               }`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -108,7 +95,7 @@ export const PricingSection = () => {
 
         <div className="text-center mt-12">
           <p className="text-muted-foreground">
-            All plans include 14-day free trial • No credit card required
+            All plans include 7-day free trial • 14-day money back guarantee.
           </p>
         </div>
       </div>

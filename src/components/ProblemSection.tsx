@@ -12,7 +12,7 @@ export const ProblemSection = () => {
     },
     {
       icon: FileText,
-      text: "Spending hours writing meeting notes by hand?"
+      text: "Forgetting what was discussed?"
     }
   ];
 
@@ -34,7 +34,6 @@ export const ProblemSection = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-tight">
             Why remote workers love Miss Notes
           </h2>
-          <div className="w-24 h-1 bg-gradient-primary mx-auto rounded-full"></div>
         </div>
 
         {/* Pain Points Cards */}
@@ -50,7 +49,6 @@ export const ProblemSection = () => {
                   <div className="w-20 h-20 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-glow group-hover:animate-glow">
                     <point.icon className="w-10 h-10 text-primary-foreground" />
                   </div>
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 </div>
                 <p className="text-lg text-muted-foreground leading-relaxed font-medium">{point.text}</p>
               </div>
@@ -62,7 +60,7 @@ export const ProblemSection = () => {
         <div className="text-center max-w-4xl mx-auto">
           <div className="bg-card/60 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-medium border border-border/50">
             <p className="text-xl md:text-2xl mb-10 text-foreground font-medium leading-relaxed">
-              Miss Notes does the heavy lifting for you — upload your call, and in 2 minutes you'll get:
+              Miss Notes does the most boring work for you - upload your call, and in 2 minutes you'll get:
             </p>
             <div className="grid sm:grid-cols-3 gap-8">
               {benefits.map((benefit, index) => (
