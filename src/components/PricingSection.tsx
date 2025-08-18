@@ -95,7 +95,7 @@ export const PricingSection = () => {
 
         <div className="text-center mt-12">
           <p className="text-muted-foreground">
-            All plans include 7-day free trial • 14-day money back guarantee.
+            All plans include 7-day free trial • 30-day money back guarantee.
           </p>
         </div>
       </div>
