@@ -48,12 +48,9 @@ export default async function handler(req, res) {
     // Check if the subscription is in trial period
     const isInTrial = subscription?.status === "trialing";
 
-    console.log("subscription", subscription?.status);
     const trialEndsAt = isInTrial
       ? new Date(subscription.trial_end * 1000).toISOString()
       : null;
-
-    console.log("trialEndsAt", trialEndsAt);
 
     // Determine meetings available based on plan
     let meetingsAvailable = 0;
@@ -95,8 +92,6 @@ export default async function handler(req, res) {
 👋 Customer Name: ${payload?.customer_name}`;
     await sendTelegramNotification({ message });
 
-    console.log(payload, "payload in checkout.session.completed");
-
     // Find user by email or create new one
     let user = await User.findOne({ email: payload.email });
     
@@ -116,11 +111,9 @@ export default async function handler(req, res) {
 
     // Check if the subscription status has changed from trial to active
     const isInTrial = subscription?.status === "trialing";
-    console.log(subscription.status, "subscription.status");
     const trialEndsAt = isInTrial
       ? new Date(subscription.trial_end * 1000).toISOString()
       : null;
-    console.log("trialEndsAt", trialEndsAt);
 
     const payload = {
       is_in_trial: isInTrial,
@@ -131,8 +124,6 @@ export default async function handler(req, res) {
     if (subscription?.cancel_at_period_end) {
       payload.subscription_renews_at = null;
     }
-
-    console.log(payload, "payload in customer.subscription.updated");
 
     await User.findOneAndUpdate(
       { customer_id: subscription.customer },
@@ -156,9 +147,6 @@ export default async function handler(req, res) {
         : null,
     };
 
-    console.log(invoice.billing_reason, "invoice.billing_reason");
-    console.log(user, 'user');
-
     // Check if this payment marks the end of a trial period
     if (invoice.billing_reason === "subscription_cycle") {
       payload.is_in_trial = false;
@@ -173,14 +161,10 @@ export default async function handler(req, res) {
         payload.meetings_available = -1; // Unlimited
       }
 
-      console.log(payload, "payload in invoice.payment_succeeded");
-
       await User.findOneAndUpdate(
         { customer_id: invoice.customer },
         { $set: payload }
       );
-
-      console.log(invoice?.billing_reason, 'invoice?.billing_reason');
     }
   }
 
@@ -196,8 +180,6 @@ export default async function handler(req, res) {
       trial_ends_at: null,
       meetings_available: 0,
     };
-
-    console.log(payload, "payload in customer.subscription.deleted");
 
     await User.findOneAndUpdate(
       { customer_id: subscription.customer },

@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Check, Star, Zap } from "lucide-react";
 import { isDevelopment } from "@/utils/isDevelopment";
+import { useState } from "react";
 
 export var PricingSection = function () {
-  var plans = [
+  const [loading, setLoading] = useState(null);
+
+  const plans = [
     {
       name: "Pro",
+      plan: "pro",
       price: "$7",
       period: "per month",
       description: "For active remote workers",
@@ -20,6 +24,7 @@ export var PricingSection = function () {
     },
     {
       name: "One Year Access",
+      plan: "one-year-pass",
       price: "$49",
       period: "one time",
       description: "For remote workers who want to save money",
@@ -33,10 +38,40 @@ export var PricingSection = function () {
       popular: false,
       oneYearPass: true,
       savings: "40%",
-      originalPrice: "$84",
-      link: isDevelopment ? "https://buy.stripe.com/test_4gM4gsamBglx1of4yB4ZG00" : "https://buy.stripe.com/test_4gM4gsamBglx1of4yB4ZG00"
+      originalPrice: "$84"
     }
   ];
+
+  const handleCheckout = async (plan, planDetails) => {
+    setLoading(plan);
+    
+    try {
+      const response = await fetch('/api/create-checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          plan: plan,
+          planDetails: planDetails
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+
+      const { url } = await response.json();
+      
+      // Redirect to Stripe Checkout
+      window.location.href = url;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to create checkout session. Please try again.');
+    } finally {
+      setLoading(null);
+    }
+  };
 
   return (
     <section className="py-20">
@@ -135,13 +170,17 @@ export var PricingSection = function () {
                       ? "bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 font-semibold" 
                       : ""
                   }`}
-                  onClick={() => {
-                    if (plan.link) {
-                      window.location.href = plan.link;
-                    }
-                  }}
+                  onClick={() => handleCheckout(plan.plan, plan)}
+                  disabled={loading === plan.plan}
                 >
-                  {plan.cta}
+                  {loading === plan.plan ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+                      Processing...
+                    </div>
+                  ) : (
+                    plan.cta
+                  )}
                 </Button>
               </div>
             );
