@@ -28,7 +28,7 @@ export var PricingSection = function () {
         "Custom branding",
         "Priority support",
       ],
-      cta: "Buy Now",
+      cta: "Buy Now (12 months access)",
       popular: false,
       oneYearPass: true,
       savings: "40%",
