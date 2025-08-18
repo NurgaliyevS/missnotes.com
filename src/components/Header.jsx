@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Upload, Home } from 'lucide-react';
+import { Upload, Home, NotebookPen } from 'lucide-react';
 
 export function Header() {
   return (
@@ -9,8 +9,9 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 text-xl font-bold text-slate-900">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg"></div>
-            MeetingNotes
+          {/* notes icon from lucide react */}
+              <NotebookPen className="h-8 w-8" />
+            MissNotes
           </Link>
 
           {/* Navigation */}
