@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SessionProvider } from "next-auth/react";
+import { Header } from "@/components/Header";
 import "../styles/globals.css";
 
 export default function App({
@@ -12,6 +13,7 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <TooltipProvider>
+        <Header />
         <Toaster />
         <Sonner />
         <Component {...pageProps} />
