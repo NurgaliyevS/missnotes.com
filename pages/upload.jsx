@@ -27,7 +27,8 @@ export default function UploadPage() {
   const [generatingSummary, setGeneratingSummary] = useState(false);
   const [summaryResult, setSummaryResult] = useState(null);
   const [meetingTitle, setMeetingTitle] = useState('');
-  const [meetingDate, setMeetingDate] = useState('');
+  // by default set the meeting date to the current date
+  const [meetingDate, setMeetingDate] = useState(new Date().toISOString().split('T')[0]);
   const { toast } = useToast();
 
   const handleDrag = (e) => {
@@ -81,32 +82,32 @@ export default function UploadPage() {
   const handleUpload = async () => {
     if (!file) return;
 
-    setUploading(true);
+    setUploading(false);
     setUploadProgress(0);
-
+    handleTranscription();
     // Simulate upload progress
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 90) {
-          clearInterval(interval);
-          return 90;
-        }
-        return prev + 10;
-      });
-    }, 200);
+    // const interval = setInterval(() => {
+    //   setUploadProgress(prev => {
+    //     if (prev >= 90) {
+    //       clearInterval(interval);
+    //       return 90;
+    //     }
+    //     return prev + 10;
+    //   });
+    // }, 200);
 
-    // Simulate upload completion
-    setTimeout(() => {
-      setUploadProgress(100);
-      setUploading(false);
-      toast({
-        title: "Upload successful!",
-        description: "Your recording has been uploaded and is being processed.",
-      });
+    // // Simulate upload completion
+    // setTimeout(() => {
+    //   setUploadProgress(100);
+    //   setUploading(false);
+    //   toast({
+    //     title: "Upload successful!",
+    //     description: "Your recording has been uploaded and is being processed.",
+    //   });
       
-      // Start transcription automatically
-      handleTranscription();
-    }, 3000);
+    //   // Start transcription automatically
+    //   handleTranscription();
+    // }, 3000);
   };
 
   const handleTranscription = async () => {
@@ -488,7 +489,7 @@ export default function UploadPage() {
                     <Target className="h-6 w-6 text-purple-600" />
                   </div>
                   <p className="text-sm text-purple-600">Model</p>
-                  <p className="font-medium text-slate-900">GPT-4</p>
+                  <p className="font-medium text-slate-900">GPT-4o-mini</p>
                 </div>
               </div>
 
@@ -579,9 +580,9 @@ export default function UploadPage() {
               </div>
 
               <Tabs defaultValue="transcript" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-1">
                   <TabsTrigger value="transcript">Full Transcript</TabsTrigger>
-                  <TabsTrigger value="segments">Timestamps</TabsTrigger>
+                  {/* <TabsTrigger value="segments">Timestamps</TabsTrigger> */}
                 </TabsList>
                 
                 <TabsContent value="transcript" className="mt-4">
