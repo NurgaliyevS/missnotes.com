@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Check, Star, Zap } from "lucide-react";
+import { isDevelopment } from "@/utils/isDevelopment";
 
 export var PricingSection = function () {
   var plans = [
@@ -18,7 +19,7 @@ export var PricingSection = function () {
       popular: true,
     },
     {
-      name: "One Year Pass",
+      name: "One Year Access",
       price: "$49",
       period: "one time",
       description: "For remote workers who want to save money",
@@ -32,22 +33,9 @@ export var PricingSection = function () {
       popular: false,
       oneYearPass: true,
       savings: "40%",
-      originalPrice: "$84"
+      originalPrice: "$84",
+      link: isDevelopment ? "https://buy.stripe.com/test_4gM4gsamBglx1of4yB4ZG00" : "https://buy.stripe.com/test_4gM4gsamBglx1of4yB4ZG00"
     }
-    // {
-    //     name: "Team",
-    //     price: "$25",
-    //     period: "per month",
-    //     description: "For teams and agencies",
-    //     features: [
-    //         "Up to 5 users",
-    //         "Shared projects",
-    //         "Team analytics",
-    //         "Custom integrations"
-    //     ],
-    //     cta: "Start 7 Day Free Trial",
-    //     popular: false
-    // }
   ];
 
   return (
@@ -147,6 +135,11 @@ export var PricingSection = function () {
                       ? "bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 font-semibold" 
                       : ""
                   }`}
+                  onClick={() => {
+                    if (plan.link) {
+                      window.location.href = plan.link;
+                    }
+                  }}
                 >
                   {plan.cta}
                 </Button>
