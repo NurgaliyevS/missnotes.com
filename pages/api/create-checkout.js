@@ -1,6 +1,6 @@
 import Stripe from "stripe";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "./auth/[...nextauth]";
+// import { getServerSession } from "next-auth/next";
+// import { authOptions } from "./auth/[...nextauth]";
 import User from "@/backend/user";
 import connectMongoDB from "@/backend/mongodb";
 
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   await connectMongoDB();
   
   try {
-    const session = await getServerSession(req, res, authOptions);
+    const session = null;
     const { plan, planDetails } = req.body;
 
     console.log("Creating checkout for plan:", plan, planDetails);

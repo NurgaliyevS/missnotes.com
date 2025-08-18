@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Upload, Zap, Share2 } from "lucide-react";
 import Image from "next/image";
 import processImage from "@/assets/process-steps.jpg";
+import { handleCheckout, defaultProPlan } from "@/lib/checkout";
 export var DemoSection = function () {
     var steps = [
         {
@@ -76,7 +77,12 @@ export var DemoSection = function () {
         <div className="text-center mt-10">
           <div className="relative inline-block">
             <div className="absolute inset-0 bg-gradient-primary rounded-xl blur-xl opacity-30 transform scale-110"></div>
-            <Button variant="hero" size="lg" className="relative text-lg px-8 py-4 shadow-glow hover:shadow-large transition-all duration-300">
+            <Button 
+              variant="hero" 
+              size="lg" 
+              className="relative text-lg px-8 py-4 shadow-glow hover:shadow-large transition-all duration-300"
+              onClick={() => handleCheckout(defaultProPlan.plan, defaultProPlan)}
+            >
               Start 7 Day Free Trial
             </Button>
           </div>

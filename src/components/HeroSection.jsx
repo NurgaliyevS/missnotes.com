@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import heroImage from "@/assets/hero-remote-workers.jpg";
+import { handleCheckout, defaultProPlan } from "@/lib/checkout";
 export var HeroSection = function () {
     return (<section className="relative overflow-hidden bg-gradient-subtle py-20 lg:py-32">
       <div className="container mx-auto px-4">
@@ -18,7 +19,12 @@ export var HeroSection = function () {
               No setup, no distractions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" className="text-lg px-8 py-4">
+              <Button 
+                variant="hero" 
+                size="lg" 
+                className="text-lg px-8 py-4"
+                onClick={() => handleCheckout(defaultProPlan.plan, defaultProPlan)}
+              >
                 Start 7 Day Free Trial
               </Button>
               <Button variant="outline" size="lg" className="text-lg px-8 py-4">

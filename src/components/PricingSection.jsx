@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Check, Star, Zap } from "lucide-react";
 import { isDevelopment } from "@/utils/isDevelopment";
 import { useState } from "react";
+import { handleCheckout } from "@/lib/checkout";
 
 export var PricingSection = function () {
   const [loading, setLoading] = useState(null);
@@ -42,35 +43,8 @@ export var PricingSection = function () {
     }
   ];
 
-  const handleCheckout = async (plan, planDetails) => {
-    setLoading(plan);
-    
-    try {
-      const response = await fetch('/api/create-checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          plan: plan,
-          planDetails: planDetails
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create checkout session');
-      }
-
-      const { url } = await response.json();
-      
-      // Redirect to Stripe Checkout
-      window.location.href = url;
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Failed to create checkout session. Please try again.');
-    } finally {
-      setLoading(null);
-    }
+  const handleCheckoutLocal = async (plan, planDetails) => {
+    await handleCheckout(plan, planDetails, setLoading);
   };
 
   return (
@@ -170,7 +144,7 @@ export var PricingSection = function () {
                       ? "bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 font-semibold" 
                       : ""
                   }`}
-                  onClick={() => handleCheckout(plan.plan, plan)}
+                  onClick={() => handleCheckoutLocal(plan.plan, plan)}
                   disabled={loading === plan.plan}
                 >
                   {loading === plan.plan ? (
