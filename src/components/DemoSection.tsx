@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Upload, Zap, Share2 } from "lucide-react";
+import Image from "next/image";
 import processImage from "@/assets/process-steps.jpg";
 
 export const DemoSection = () => {
@@ -75,10 +76,12 @@ export const DemoSection = () => {
             <div className="relative group">
               <div className="absolute inset-0 bg-gradient-primary rounded-3xl opacity-20 group-hover:opacity-30 transition-opacity blur-xl transform scale-105"></div>
               <div className="relative bg-card/50 backdrop-blur-sm rounded-3xl p-4 shadow-large border border-border/30">
-                <img
+                <Image
                   src={processImage}
                   alt="Simple 3-step process illustration"
                   className="w-full h-auto rounded-2xl"
+                  width={600}
+                  height={400}
                 />
               </div>
             </div>

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import heroImage from "@/assets/hero-remote-workers.jpg";
 
 export const HeroSection = () => {
@@ -28,10 +29,12 @@ export const HeroSection = () => {
             </div>
           </div>
           <div className="animate-fade-up delay-200">
-            <img
+            <Image
               src={heroImage}
               alt="Remote workers collaborating with clear meeting notes"
               className="w-full h-auto rounded-2xl shadow-large"
+              width={600}
+              height={400}
             />
           </div>
         </div>

@@ -1,74 +1,104 @@
-# Welcome to your Lovable project
+# Meeting Notes Whisperer
 
-## Project info
+AI-powered meeting transcription and insights for remote workers.
 
-**URL**: https://lovable.dev/projects/7154a023-6434-4009-b19c-445e8d6b4c19
+## 🚀 Tech Stack
 
-## How can I edit this code?
+- **Framework**: Next.js 14 with Pages Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui with Radix UI
+- **State Management**: TanStack Query
+- **Forms**: React Hook Form with Zod validation
 
-There are several ways of editing your application.
+## 🏗️ Project Structure
 
-**Use Lovable**
+```
+├── pages/                 # Next.js Pages Router
+│   ├── _app.tsx          # App wrapper with providers
+│   ├── _document.tsx     # Custom HTML document
+│   ├── index.tsx         # Home page
+│   └── 404.tsx           # 404 error page
+├── src/
+│   ├── components/        # React components
+│   │   ├── ui/           # shadcn/ui components
+│   │   ├── HeroSection.tsx
+│   │   ├── ProblemSection.tsx
+│   │   ├── DemoSection.tsx
+│   │   ├── PricingSection.tsx
+│   │   ├── SocialProofSection.tsx
+│   │   └── ClosingCTASection.tsx
+│   ├── hooks/            # Custom React hooks
+│   ├── lib/              # Utility functions
+│   └── assets/           # Images and static assets
+├── styles/
+│   └── globals.css       # Global styles and Tailwind CSS
+└── public/               # Static files
+```
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7154a023-6434-4009-b19c-445e8d6b4c19) and start prompting.
+## 🚀 Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js 18+ 
+- npm, yarn, or pnpm
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Follow these steps:
+### Development
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Build
 
-**Use GitHub Codespaces**
+```bash
+npm run build
+npm start
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔧 Key Features
 
-## What technologies are used for this project?
+- **File-based Routing**: Next.js Pages Router for simple navigation
+- **Server-Side Rendering**: Better SEO and performance
+- **Image Optimization**: Automatic image optimization with Next.js Image
+- **TypeScript**: Full type safety
+- **Responsive Design**: Mobile-first approach with Tailwind CSS
+- **Component Library**: Consistent UI with shadcn/ui components
 
-This project is built with:
+## 📱 Pages
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Home** (`/`): Landing page with hero, features, and pricing
+- **404**: Custom error page for non-existent routes
 
-## How can I deploy this project?
+## 🎨 Design System
 
-Simply open [Lovable](https://lovable.dev/projects/7154a023-6434-4009-b19c-445e8d6b4c19) and click on Share -> Publish.
+Built with a modern, remote-work focused design system featuring:
+- Purple gradient primary colors
+- Soft blue accents
+- Glassmorphism effects
+- Smooth animations and transitions
+- Responsive grid layouts
 
-## Can I connect a custom domain to my Lovable project?
+## 🚀 Migration Notes
 
-Yes, you can!
+This project was migrated from React + Vite to Next.js 14 with Pages Router. Key changes:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- Replaced Vite with Next.js build system
+- Converted React Router to Next.js file-based routing
+- Updated image handling to use Next.js Image component
+- Maintained all existing UI components and styling
+- Preserved TypeScript configuration and path aliases
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
-# missnotes.com
+## 📄 License
+
+This project is private and proprietary.
