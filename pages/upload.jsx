@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, FileAudio, FileVideo, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Target, FileText } from 'lucide-react';
+import { Upload, FileAudio, FileVideo, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Target, FileText, Share2, Copy } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,6 +30,7 @@ export default function UploadPage() {
   const [meetingTitle, setMeetingTitle] = useState('');
   // by default set the meeting date to the current date
   const [meetingDate, setMeetingDate] = useState(new Date().toISOString().split('T')[0]);
+  const [shareableLink, setShareableLink] = useState('');
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -199,6 +200,7 @@ export default function UploadPage() {
     setTranscriptionProgress(0);
     setMeetingTitle('');
     setMeetingDate('');
+    setShareableLink('');
   };
 
   const getFileIcon = (fileType) => {
@@ -326,6 +328,64 @@ export default function UploadPage() {
     
     // Save the PDF
     doc.save(`${meetingTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_summary.pdf`);
+  };
+
+  const generateShareableLink = async () => {
+    if (!summaryResult) return;
+    
+    // Generate a unique ID for the meeting
+    const meetingId = btoa(`${meetingTitle}-${Date.now()}`).replace(/[^a-zA-Z0-9]/g, '');
+    
+    // Create the shareable link
+    const link = `${window.location.origin}/share/${meetingId}`;
+    setShareableLink(link);
+    
+    // Store the meeting data in the backend
+    const meetingData = {
+      id: meetingId,
+      title: meetingTitle,
+      date: meetingDate,
+      summary: summaryResult,
+      transcription: transcriptionResult,
+      timestamp: Date.now()
+    };
+    
+    try {
+      const response = await fetch(`/api/meetings/${meetingId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ meetingData }),
+      });
+      
+      if (response.ok) {
+        toast.success('Shareable link generated!');
+      } else {
+        toast.error('Failed to save meeting data');
+      }
+    } catch (error) {
+      console.error('Error saving meeting data:', error);
+      toast.error('Failed to save meeting data');
+    }
+  };
+
+  const copyToClipboard = async () => {
+    if (!shareableLink) return;
+    
+    try {
+      await navigator.clipboard.writeText(shareableLink);
+      toast.success('Link copied to clipboard!');
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = shareableLink;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      toast.success('Link copied to clipboard!');
+    }
   };
 
   return (
@@ -573,16 +633,58 @@ export default function UploadPage() {
                   Export PDF
                 </Button>
                 <Button 
+                  onClick={generateShareableLink}
+                  variant="outline"
+                  disabled={shareableLink !== ''}
+                  className={`${
+                    shareableLink !== '' 
+                      ? 'bg-gray-400 cursor-not-allowed' 
+                      : 'bg-green-600 hover:bg-green-700 text-white'
+                  }`}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  {shareableLink !== '' ? 'Already Shared' : 'Share via Link'}
+                </Button>
+                <Button 
                   onClick={() => {
                     setSummaryResult(null);
                     setMeetingTitle('');
                     setMeetingDate('');
+                    setShareableLink('');
                   }} 
                   variant="outline"
                 >
                   Generate New Summary
                 </Button>
               </div>
+
+              {/* Shareable Link Section */}
+              {shareableLink && (
+                <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                  <h3 className="font-medium text-green-800 mb-2 flex items-center gap-2">
+                    <Share2 className="h-4 w-4" />
+                    Shareable Link Generated
+                  </h3>
+                  <p className="text-sm text-green-700 mb-3">
+                    Anyone with this link can view your meeting summary:
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={shareableLink}
+                      readOnly
+                      className="bg-white"
+                    />
+                    <Button
+                      onClick={copyToClipboard}
+                      size="sm"
+                      variant="outline"
+                      className="bg-white hover:bg-green-100"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
