@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { useToast } from '@/hooks/use-toast';
+import toast from 'react-hot-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,7 +29,6 @@ export default function UploadPage() {
   const [meetingTitle, setMeetingTitle] = useState('');
   // by default set the meeting date to the current date
   const [meetingDate, setMeetingDate] = useState(new Date().toISOString().split('T')[0]);
-  const { toast } = useToast();
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -62,21 +61,14 @@ export default function UploadPage() {
     const validation = validateFile(selectedFile);
     
     if (!validation.isValid) {
-      toast({
-        title: "File validation failed",
-        description: validation.errors.join(', '),
-        variant: "destructive",
-      });
+      toast.error(validation.errors.join(', '));
       return;
     }
 
     setFile(selectedFile);
     setTranscriptionResult(null);
     setSummaryResult(null);
-    toast({
-      title: "File selected",
-      description: `${selectedFile.name} has been selected for upload.`,
-    });
+    toast.success(`${selectedFile.name} has been selected for upload.`);
   };
 
   const handleUpload = async () => {
@@ -149,18 +141,11 @@ export default function UploadPage() {
       setTranscriptionResult(result);
       setTranscriptionProgress(100);
 
-      toast({
-        title: "Transcription complete!",
-        description: `Successfully transcribed ${file.name}`,
-      });
+      toast.success(`Successfully transcribed ${file.name}`);
 
     } catch (error) {
       console.error('Transcription error:', error);
-      toast({
-        title: "Transcription failed",
-        description: error.message || "An error occurred during transcription.",
-        variant: "destructive",
-      });
+      toast.error(error.message || "An error occurred during transcription.");
     } finally {
       setTranscribing(false);
     }
@@ -168,11 +153,7 @@ export default function UploadPage() {
 
   const handleGenerateSummary = async () => {
     if (!transcriptionResult || !meetingTitle.trim()) {
-      toast({
-        title: "Missing information",
-        description: "Please provide a meeting title and ensure transcription is complete.",
-        variant: "destructive",
-      });
+      toast.error("Please provide a meeting title and ensure transcription is complete.");
       return;
     }
 
@@ -199,18 +180,11 @@ export default function UploadPage() {
       const result = await response.json();
       setSummaryResult(result);
 
-      toast({
-        title: "AI Summary generated!",
-        description: "Meeting insights and action items have been created.",
-      });
+      toast.success("AI Summary generated!");
 
     } catch (error) {
       console.error('Summary generation error:', error);
-      toast({
-        title: "Summary generation failed",
-        description: error.message || "An error occurred while generating the summary.",
-        variant: "destructive",
-      });
+      toast.error(error.message || "An error occurred while generating the summary.");
     } finally {
       setGeneratingSummary(false);
     }

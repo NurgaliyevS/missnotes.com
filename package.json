@@ -59,6 +59,7 @@
     "stripe": "^18.4.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "react-hot-toast": "^2.5.2",
     "vaul": "^0.9.9"
   },
   "devDependencies": {
