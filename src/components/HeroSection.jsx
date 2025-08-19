@@ -7,7 +7,7 @@ import { Upload } from "lucide-react";
 
 export var HeroSection = function () {
     return (<section className="relative overflow-hidden bg-gradient-subtle py-12 sm:py-16 lg:py-32">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           <div className="animate-fade-up">
             <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6">
@@ -21,17 +21,16 @@ export var HeroSection = function () {
               Remote workers' fastest way to turn meeting recordings into summaries + action items. 
               No setup, no distractions.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
               <Button 
                 variant="hero" 
-                size="lg" 
-                className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto"
+                className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto shadow-soft hover:shadow-glow h-12 sm:h-14 flex items-center justify-center rounded-lg font-semibold"
                 onClick={() => handleCheckout(defaultProPlan.plan, defaultProPlan)}
               >
                 Start 7 Day Free Trial
               </Button>
               <Link href="/upload" className="w-full sm:w-auto">
-                <Button variant="outline" size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full">
+                <Button variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full border-2 hover:bg-slate-50 transition-colors h-12 sm:h-14 flex items-center justify-center rounded-lg font-medium">
                   <Upload className="h-4 w-4 mr-2" />
                   Upload Recording
                 </Button>
