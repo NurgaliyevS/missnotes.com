@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Upload, FileAudio, FileVideo, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Target } from 'lucide-react';
+import { Upload, FileAudio, FileVideo, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Target, FileText } from 'lucide-react';
+import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -264,6 +265,69 @@ export default function UploadPage() {
     URL.revokeObjectURL(url);
   };
 
+  const downloadSummaryPDF = () => {
+    if (!summaryResult) return;
+    
+    const doc = new jsPDF();
+    
+    // Add title
+    doc.setFontSize(20);
+    doc.text('AI Meeting Summary', 20, 30);
+    
+    // Add meeting details
+    doc.setFontSize(12);
+    doc.text(`Meeting: ${meetingTitle}`, 20, 50);
+    doc.text(`Date: ${meetingDate}`, 20, 60);
+    doc.text(`Generated: ${new Date(summaryResult.timestamp).toLocaleString()}`, 20, 70);
+    
+    // Add summary sections
+    let yPosition = 90;
+    
+    // Meeting Summary
+    if (summaryResult.sections.meetingSummary) {
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text('Meeting Summary', 20, yPosition);
+      yPosition += 10;
+      
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      const summaryLines = doc.splitTextToSize(summaryResult.sections.meetingSummary, 170);
+      doc.text(summaryLines, 20, yPosition);
+      yPosition += (summaryLines.length * 5) + 10;
+    }
+    
+    // Key Decisions
+    if (summaryResult.sections.keyDecisions) {
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text('Key Decisions', 20, yPosition);
+      yPosition += 10;
+      
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      const decisionsLines = doc.splitTextToSize(summaryResult.sections.keyDecisions, 170);
+      doc.text(decisionsLines, 20, yPosition);
+      yPosition += (decisionsLines.length * 5) + 10;
+    }
+    
+    // Action Items
+    if (summaryResult.sections.actionItems) {
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.text('Action Items', 20, yPosition);
+      yPosition += 10;
+      
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      const actionLines = doc.splitTextToSize(summaryResult.sections.actionItems, 170);
+      doc.text(actionLines, 20, yPosition);
+    }
+    
+    // Save the PDF
+    doc.save(`${meetingTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_summary.pdf`);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
       <div className="max-w-6xl mx-auto">
@@ -503,6 +567,10 @@ export default function UploadPage() {
                 <Button onClick={downloadSummary} variant="outline">
                   <Download className="h-4 w-4 mr-2" />
                   Download Summary
+                </Button>
+                <Button onClick={downloadSummaryPDF} variant="outline">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Export PDF
                 </Button>
                 <Button 
                   onClick={() => {
