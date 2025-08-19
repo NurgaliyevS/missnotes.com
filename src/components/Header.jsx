@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Button } from '@/components/ui/button';
 import { Upload, Home, NotebookPen, Menu, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
@@ -7,6 +8,7 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef(null);
   const menuButtonRef = useRef(null);
+  const router = useRouter();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(prev => !prev);
@@ -15,6 +17,28 @@ export function Header() {
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
+
+  const handleNavigation = (path) => {
+    closeMobileMenu();
+    // Small delay to ensure menu closes smoothly before navigation
+    setTimeout(() => {
+      router.push(path);
+    }, 150);
+  };
+
+  // Close menu when route changes
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (isMobileMenuOpen) {
+        closeMobileMenu();
+      }
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+  }, [router, isMobileMenuOpen]);
 
   // Close mobile menu when clicking outside
   useEffect(() => {
@@ -115,24 +139,22 @@ export function Header() {
               className="md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-md absolute left-0 right-0 top-16 z-40 shadow-lg"
             >
               <nav className="py-4 space-y-2 px-4">
-                <Link 
-                  href="/" 
-                  className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors px-4 py-3 hover:bg-slate-50 rounded-lg active:bg-slate-100"
-                  onClick={closeMobileMenu}
-                  onTouchEnd={closeMobileMenu}
+                <button 
+                  className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors px-4 py-3 hover:bg-slate-50 rounded-lg active:bg-slate-100 w-full text-left touch-manipulation"
+                  onClick={() => handleNavigation('/')}
+                  onTouchEnd={() => handleNavigation('/')}
                 >
                   <Home className="h-4 w-4" />
                   Home
-                </Link>
-                <Link 
-                  href="/upload" 
-                  className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors px-4 py-3 hover:bg-slate-50 rounded-lg active:bg-slate-100"
-                  onClick={closeMobileMenu}
-                  onTouchEnd={closeMobileMenu}
+                </button>
+                <button 
+                  className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors px-4 py-3 hover:bg-slate-50 rounded-lg active:bg-slate-100 w-full text-left touch-manipulation"
+                  onClick={() => handleNavigation('/upload')}
+                  onTouchEnd={() => handleNavigation('/upload')}
                 >
                   <Upload className="h-4 w-4" />
                   Upload
-                </Link>
+                </button>
               </nav>
             </div>
           </>
