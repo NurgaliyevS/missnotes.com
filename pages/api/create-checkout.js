@@ -78,7 +78,7 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/dashboard/onboarding`,
+      success_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/upload`,
       cancel_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}#pricing`,
       metadata: {
         plan: plan,

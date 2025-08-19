@@ -31,7 +31,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
 var SIDEBAR_COOKIE_NAME = "sidebar:state";
 var SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 var SIDEBAR_WIDTH = "16rem";
@@ -96,11 +95,9 @@ var SidebarProvider = React.forwardRef(function (_a, ref) {
         toggleSidebar: toggleSidebar,
     }); }, [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]);
     return (<SidebarContext.Provider value={contextValue}>
-        <TooltipProvider delayDuration={0}>
-          <div style={__assign({ "--sidebar-width": SIDEBAR_WIDTH, "--sidebar-width-icon": SIDEBAR_WIDTH_ICON }, style)} className={cn("group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar", className)} ref={ref} {...props}>
-            {children}
-          </div>
-        </TooltipProvider>
+        <div style={__assign({ "--sidebar-width": SIDEBAR_WIDTH, "--sidebar-width-icon": SIDEBAR_WIDTH_ICON }, style)} className={cn("group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar", className)} ref={ref} {...props}>
+          {children}
+        </div>
       </SidebarContext.Provider>);
 });
 SidebarProvider.displayName = "SidebarProvider";
@@ -240,22 +237,9 @@ var sidebarMenuButtonVariants = cva("peer/menu-button flex w-full items-center g
     },
 });
 var SidebarMenuButton = React.forwardRef(function (_a, ref) {
-    var _b = _a.asChild, asChild = _b === void 0 ? false : _b, _c = _a.isActive, isActive = _c === void 0 ? false : _c, _d = _a.variant, variant = _d === void 0 ? "default" : _d, _e = _a.size, size = _e === void 0 ? "default" : _e, tooltip = _a.tooltip, className = _a.className, props = __rest(_a, ["asChild", "isActive", "variant", "size", "tooltip", "className"]);
+    var _b = _a.asChild, asChild = _b === void 0 ? false : _b, _c = _a.isActive, isActive = _c === void 0 ? false : _c, _d = _a.variant, variant = _d === void 0 ? "default" : _d, _e = _a.size, size = _e === void 0 ? "default" : _e, className = _a.className, props = __rest(_a, ["asChild", "isActive", "variant", "size", "className"]);
     var Comp = asChild ? Slot : "button";
-    var _f = useSidebar(), isMobile = _f.isMobile, state = _f.state;
-    var button = (<Comp ref={ref} data-sidebar="menu-button" data-size={size} data-active={isActive} className={cn(sidebarMenuButtonVariants({ variant: variant, size: size }), className)} {...props}/>);
-    if (!tooltip) {
-        return button;
-    }
-    if (typeof tooltip === "string") {
-        tooltip = {
-            children: tooltip,
-        };
-    }
-    return (<Tooltip>
-        <TooltipTrigger asChild>{button}</TooltipTrigger>
-        <TooltipContent side="right" align="center" hidden={state !== "collapsed" || isMobile} {...tooltip}/>
-      </Tooltip>);
+    return (<Comp ref={ref} data-sidebar="menu-button" data-size={size} data-active={isActive} className={cn(sidebarMenuButtonVariants({ variant: variant, size: size }), className)} {...props}/>);
 });
 SidebarMenuButton.displayName = "SidebarMenuButton";
 var SidebarMenuAction = React.forwardRef(function (_a, ref) {
