@@ -15,13 +15,20 @@ export var HeroSection = function () {
               <Rocket className="w-3 h-3 mr-2" />
               From remote worker, for remote workers
             </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 sm:mb-6">
+              Upload meeting audio. Get{" "}
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                notes & action items{" "}
+              </span>{" "}
+              in 2 minutes. Share instantly.
+            </h1>
+            {/* <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6">
               Never leave a meeting{" "}
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 without clear notes
               </span>{" "}
               again.
-            </h1>
+            </h1> */}
             <p className="text-lg sm:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
               Remote workers' fastest way to turn meeting recordings into
               summaries + action items. No setup, no distractions.

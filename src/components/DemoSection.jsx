@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Upload, Zap, Share2 } from "lucide-react";
-import Image from "next/image";
-import processImage from "@/assets/process-steps.jpg";
 import { handleCheckout, defaultProPlan } from "@/lib/checkout";
 export var DemoSection = function () {
     var steps = [
@@ -39,8 +37,8 @@ export var DemoSection = function () {
 
         <div className="grid lg:grid-cols-2 gap-8 items-stretch max-w-6xl mx-auto">
           {/* Steps Column */}
-          <div className="relative">
-            <div className="space-y-6">
+          <div className="relative flex flex-col">
+            <div className="space-y-6 flex-1">
               {steps.map(function (step, index) { return (<div key={index} className="group relative animate-fade-up hover:scale-105 transition-all duration-300" style={{ animationDelay: "".concat(index * 100, "ms") }}>
                   <div className="bg-card/70 backdrop-blur-sm rounded-2xl p-6 shadow-soft hover:shadow-medium transition-all duration-300 border border-border/30 hover:border-primary/20 relative">
                     <div className="flex gap-5 items-start">
@@ -63,12 +61,22 @@ export var DemoSection = function () {
             </div>
           </div>
           
-          {/* Image Column */}
-          <div className="relative animate-fade-up delay-200">
-            <div className="relative group">
+          {/* Video Column */}
+          <div className="relative animate-fade-up delay-200 flex flex-col">
+            <div className="relative group flex-1 flex flex-col">
               <div className="absolute inset-0 bg-gradient-primary rounded-3xl opacity-20 group-hover:opacity-30 transition-opacity blur-xl transform scale-105"></div>
-              <div className="relative bg-card/50 backdrop-blur-sm rounded-3xl p-4 shadow-large border border-border/30">
-                <Image src={processImage} alt="Simple 3-step process illustration" className="w-full h-auto rounded-2xl" width={600} height={400}/>
+              <div className="relative bg-card/50 backdrop-blur-sm rounded-3xl p-4 shadow-large border border-border/30 flex-1 flex flex-col">
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  src="https://www.youtube.com/embed/OV1PbEGu9js?si=n4kSF9YMIgRnVWw_" 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  referrerPolicy="strict-origin-when-cross-origin" 
+                  allowFullScreen
+                  className="w-full h-full rounded-2xl flex-1"
+                ></iframe>
               </div>
             </div>
           </div>
