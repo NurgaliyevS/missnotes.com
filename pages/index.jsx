@@ -3,6 +3,7 @@ import { ProblemSection } from "@/components/ProblemSection";
 import { DemoSection } from "@/components/DemoSection";
 import { PricingSection } from "@/components/PricingSection";
 import { ClosingCTASection } from "@/components/ClosingCTASection";
+import { CreatorSection } from "@/components/CreatorSection";
 var Index = function () {
     return (<main className="min-h-screen">
       <HeroSection />
@@ -11,6 +12,7 @@ var Index = function () {
       {/* not ready yet */}
       {/* <SocialProofSection /> */}
       <PricingSection />
+      <CreatorSection />
       <ClosingCTASection />
     </main>);
 };
