@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Users } from "lucide-react";
+import { Users, Volume2, NotebookPen, Share2 } from "lucide-react";
 
 export var CreatorSection = function () {
   return (
@@ -39,8 +39,6 @@ export var CreatorSection = function () {
                   Why I made it ?
                 </h3>
                 <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  {/* I hate taking notes during meetings because it's so time consuming and I don't focus on the meeting.
-                    Especially when I have a lot of meetings, I forgot what was discussed, deadlines, and action items. */}
                   I’ve always hated taking notes during meetings because it’s
                   time-consuming and distracting. After meetings, I often forgot key points, deadlines, and action
                   items. That frustration inspired me to create MissNotes.
@@ -54,7 +52,7 @@ export var CreatorSection = function () {
                 <div className="space-y-2">
                   <div className="flex items-start space-x-3">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
-                      <Users className="w-3 h-3 text-blue-600" />
+                      <Volume2 className="w-3 h-3 text-blue-600" />
                     </div>
                     <p className="text-base text-muted-foreground">
                       <strong className="text-slate-800">
@@ -65,7 +63,7 @@ export var CreatorSection = function () {
                   </div>
                   <div className="flex items-start space-x-3">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
-                      <Users className="w-3 h-3 text-blue-600" />
+                      <NotebookPen className="w-3 h-3 text-blue-600" />
                     </div>
                     <p className="text-base text-muted-foreground">
                       <strong className="text-slate-800">
@@ -77,7 +75,7 @@ export var CreatorSection = function () {
                   </div>
                   <div className="flex items-start space-x-3">
                     <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
-                      <Users className="w-3 h-3 text-blue-600" />
+                      <Share2 className="w-3 h-3 text-blue-600" />
                     </div>
                     <p className="text-base text-muted-foreground">
                       <strong className="text-slate-800">
@@ -93,7 +91,7 @@ export var CreatorSection = function () {
               <div className="pt-3">
                 <p className="text-base text-muted-foreground leading-relaxed">
                   The most happiest moment for me is when I see people using my
-                  tool and getting value from it.
+                  tool and getting value from it ❤️
                 </p>
               </div>
 
