@@ -166,7 +166,7 @@ export function Header() {
             ) : (
               <>
                 <Button
-                  onClick={() => signIn("google")}
+                  onClick={() => signIn("google", { callbackUrl: "/upload" })}
                   size="sm"
                   variant="outline"
                   className="hover:bg-slate-50 transition-colors rounded-lg border-2"
@@ -175,7 +175,7 @@ export function Header() {
                   Sign in
                 </Button>
                 <Button
-                  onClick={() => signIn("google")}
+                  onClick={() => signIn("google", { callbackUrl: "/upload" })}
                   size="sm"
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
@@ -221,7 +221,7 @@ export function Header() {
               </Button>
             ) : (
               <Button
-                onClick={() => signIn("google")}
+                onClick={() => signIn("google", { callbackUrl: "/upload" })}
                 size="sm"
                 variant="outline"
                 className="hover:bg-slate-50 transition-colors rounded-lg border-2"
@@ -309,7 +309,7 @@ export function Header() {
                     <div className="space-y-2">
                       <Button
                         onClick={() => {
-                          signIn("google");
+                          signIn("google", { callbackUrl: "/upload" });
                           closeMobileMenu();
                         }}
                         size="sm"
@@ -321,7 +321,7 @@ export function Header() {
                       </Button>
                       <Button
                         onClick={() => {
-                          signIn("google");
+                          signIn("google", { callbackUrl: "/upload" });
                           closeMobileMenu();
                         }}
                         size="sm"
