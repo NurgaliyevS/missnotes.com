@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, FileAudio, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Target, FileText, Share2, Copy } from 'lucide-react';
+import { Upload, FileAudio, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Target, FileText, Share2, Copy, User } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,8 +16,11 @@ import {
   validateFile,
   getFileTypeCategory 
 } from '@/lib/audioFormats';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { useSession } from 'next-auth/react';
 
 export default function UploadPage() {
+  const { data: session } = useSession();
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -387,8 +390,9 @@ export default function UploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
-      <div className="max-w-6xl mx-auto">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
+        <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-slate-900 mb-4">
@@ -844,5 +848,6 @@ export default function UploadPage() {
         </Card>
       </div>
     </div>
+  </ProtectedRoute>
   );
 }
