@@ -44,13 +44,13 @@ The required packages are already installed:
    ```
 
 2. Navigate to `/upload` page
-3. Upload an audio/video file
+3. Upload an audio file
 4. The system will automatically transcribe using Whisper API
 
 ## How It Works
 
 ### Frontend Flow
-1. User selects an audio/video file
+1. User selects an audio file
 2. File is validated (type, size) using centralized configuration
 3. File is uploaded to the server
 4. Transcription process starts automatically
@@ -106,25 +106,11 @@ The required packages are already installed:
 - **MP2**: `audio/mp2`, `audio/x-mp2`
 - **And many more...**
 
-### Video Formats (40+ formats)
-- **MP4**: `video/mp4`, `video/x-m4v`, `video/m4v`
-- **QuickTime**: `video/quicktime`, `video/x-quicktime`
-- **AVI**: `video/avi`, `video/x-msvideo`
-- **WebM**: `video/webm`
-- **WMV**: `video/x-ms-wmv`, `video/x-ms-asf`
-- **FLV**: `video/x-flv`
-- **3GP**: `video/3gpp`, `video/3gpp2`
-- **MPEG**: `video/mpeg`, `video/mpg`, `video/mpe`, `video/mpv`
-- **Transport Streams**: `video/ts`, `video/mts`, `video/m2ts`
-- **OGV**: `video/ogv`, `video/ogg`
-- **DV**: `video/dv`, `video/x-dv`
-- **DivX/Xvid**: `video/divx`, `video/xvid`
-- **Codecs**: `video/h264`, `video/h265`, `video/hevc`, `video/vp8`, `video/vp9`
-- **And many more...**
+
 
 ### File Extensions
 - **Audio**: `.mp3`, `.m4a`, `.aac`, `.wav`, `.ogg`, `.oga`, `.opus`, `.flac`, `.aiff`, `.wma`, `.ra`, `.amr`, `.mid`, `.midi`, `.mp2`, `.xm`, `.webm`, `.3gp`, `.3g2`
-- **Video**: `.mp4`, `.m4v`, `.mov`, `.avi`, `.webm`, `.wmv`, `.flv`, `.3gp`, `.3g2`, `.mpeg`, `.mpg`, `.mpe`, `.mpv`, `.mp2`, `.ts`, `.mts`, `.m2ts`, `.ogv`, `.dv`, `.divx`, `.xvid`, `.h264`, `.h265`, `.hevc`, `.vp8`, `.vp9`, `.theora`
+
 
 ### Platform Support
 - **Google Meet** recordings (MP4, WebM)
@@ -141,7 +127,7 @@ The required packages are already installed:
 - **Language Detection**: Automatic language identification
 - **Download**: Export transcripts as text files
 - **Responsive Design**: Works on all devices
-- **Comprehensive Format Support**: 90+ audio and video formats
+- **Comprehensive Format Support**: 50+ audio formats
 - **Centralized Configuration**: Single source of truth for all formats
 
 ## Centralized Configuration

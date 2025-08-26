@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 		// Validate file type using improved validation that handles undefined MIME types
 		if (!isSupportedFormat(audioFile.mimetype, audioFile.originalFilename)) {
 			return res.status(400).json({
-				error: `Invalid file type: ${audioFile.mimetype || 'unknown'}. File: ${audioFile.originalFilename}. Supported formats include MP3, MP4, WAV, OGG, FLAC, AVI, MOV and many more.`,
+				error: `Invalid file type: ${audioFile.mimetype || 'unknown'}. File: ${audioFile.originalFilename}. Supported formats include MP3, M4A, WAV, OGG, FLAC, AAC, AIFF and many more audio formats.`,
 			});
 		}
 

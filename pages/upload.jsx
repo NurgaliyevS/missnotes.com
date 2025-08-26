@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, FileAudio, FileVideo, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Target, FileText, Share2, Copy } from 'lucide-react';
+import { Upload, FileAudio, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Target, FileText, Share2, Copy } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -207,8 +207,6 @@ export default function UploadPage() {
     const category = getFileTypeCategory(fileType, file?.name);
     if (category === 'audio') {
       return <FileAudio className="h-8 w-8 text-blue-500" />;
-    } else if (category === 'video') {
-      return <FileVideo className="h-8 w-8 text-purple-500" />;
     }
     return <FileAudio className="h-8 w-8 text-gray-500" />;
   };
@@ -408,9 +406,9 @@ export default function UploadPage() {
               <Upload className="h-5 w-5" />
               Recording Upload
             </CardTitle>
-            <CardDescription>
-              Supported formats: MP3, MP4, WAV, OGG, FLAC, AVI, MOV and many more audio/video formats
-            </CardDescription>
+                      <CardDescription>
+            Supported formats: MP3, M4A, WAV, OGG, FLAC, AAC, AIFF and many more audio formats
+          </CardDescription>
           </CardHeader>
           <CardContent>
             <div
@@ -777,7 +775,7 @@ export default function UploadPage() {
             </CardHeader>
             <CardContent className="text-center">
               <p className="text-slate-600">
-                Support for {SUPPORTED_FORMATS.length}+ audio and video formats from all major platforms.
+                Support for {SUPPORTED_FORMATS.length}+ audio formats from all major platforms.
               </p>
             </CardContent>
           </Card>
@@ -839,7 +837,7 @@ export default function UploadPage() {
               </Badge>
               <Badge variant="secondary" className="px-4 py-2">
                 <div className="w-4 h-4 bg-orange-500 rounded mr-2"></div>
-                Any Audio/Video
+                Any Audio File
               </Badge>
             </div>
           </CardContent>
