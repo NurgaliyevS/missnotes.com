@@ -206,15 +206,30 @@ export function Header() {
               )}
             </Button>
 
-            <Button
-              onClick={() => signIn("google")}
-              size="sm"
-              variant="outline"
-              className="hover:bg-slate-50 transition-colors rounded-lg border-2"
-            >
-              <LogIn className="h-4 w-4" />
-              Sign in
-            </Button>
+            {session ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  signOut({ callbackUrl: "/" });
+                  closeMobileMenu();
+                }}
+                className="w-full"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </Button>
+            ) : (
+              <Button
+                onClick={() => signIn("google")}
+                size="sm"
+                variant="outline"
+                className="hover:bg-slate-50 transition-colors rounded-lg border-2"
+              >
+                <LogIn className="h-4 w-4" />
+                Sign in
+              </Button>
+            )}
           </div>
         </div>
 
