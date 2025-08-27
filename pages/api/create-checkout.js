@@ -108,10 +108,10 @@ export default async function handler(req, res) {
         } catch (error) {
           console.error("Error retrieving customer:", error);
         }
+      } else {
+        // Only set customer_email if we don't have a customer_id
+        createLink.customer_email = session.user.email;
       }
-      
-      // Add customer email to checkout session
-      createLink.customer_email = session.user.email;
     }
 
     console.log("Creating Stripe checkout with config:", createLink);
