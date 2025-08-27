@@ -401,7 +401,7 @@ export default function UploadPage() {
               Upload Your Meeting Recording
             </h1>
             <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-              Transform your Google Meet, Zoom, or Teams recordings into actionable meeting notes with AI-powered transcription and insights.
+              Transform your Google Meet, Zoom, or Teams recordings into actionable meeting notes with transcription and insights.
             </p>
           </div>
 
@@ -508,7 +508,7 @@ export default function UploadPage() {
                 Meeting Details
               </CardTitle>
               <CardDescription>
-                Provide meeting information to generate AI-powered summaries and action items
+                Provide meeting information to generate summaries and action items
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -702,7 +702,7 @@ export default function UploadPage() {
                 Transcription Complete
               </CardTitle>
               <CardDescription>
-                AI-powered transcription using OpenAI Whisper API
+                Transcription using OpenAI Whisper API
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -791,11 +791,11 @@ export default function UploadPage() {
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="h-6 w-6 text-green-600" />
               </div>
-              <CardTitle className="text-lg">AI Processing</CardTitle>
+              <CardTitle className="text-lg">Processing</CardTitle>
             </CardHeader>
             <CardContent className="text-center">
               <p className="text-slate-600">
-                Advanced AI transcription and analysis to extract key insights from your meetings.
+                Advanced transcription and analysis to extract key insights from your meetings.
               </p>
             </CardContent>
           </Card>
@@ -805,11 +805,13 @@ export default function UploadPage() {
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <AlertCircle className="h-6 w-6 text-purple-600" />
               </div>
-              <CardTitle className="text-lg">Secure & Private</CardTitle>
+              <CardTitle className="text-lg">
+                Language Support
+              </CardTitle>
             </CardHeader>
             <CardContent className="text-center">
               <p className="text-slate-600">
-                Enterprise-grade security with end-to-end encryption for your sensitive meeting content.
+                Support for 99+ languages (English, Spanish, French, German, Italian, Portuguese, Russian, Chinese, Japanese, Korean, etc.)
               </p>
             </CardContent>
           </Card>

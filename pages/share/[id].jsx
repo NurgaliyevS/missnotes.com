@@ -174,7 +174,7 @@ export default function SharePage() {
               {meetingData.title}
             </CardTitle>
             <CardDescription>
-              AI-powered meeting summary and insights
+              Meeting summary and insights
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -256,7 +256,7 @@ export default function SharePage() {
                 Full Transcript
               </CardTitle>
               <CardDescription>
-                AI-powered transcription using OpenAI Whisper API
+                Transcription using OpenAI Whisper API
               </CardDescription>
             </CardHeader>
             <CardContent>
