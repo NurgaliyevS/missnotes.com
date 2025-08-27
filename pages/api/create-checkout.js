@@ -1,6 +1,6 @@
 import Stripe from "stripe";
-// import { getServerSession } from "next-auth/next";
-// import { authOptions } from "./auth/[...nextauth]";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./auth/[...nextauth]";
 import User from "@/backend/user";
 import connectMongoDB from "@/backend/mongodb";
 
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   await connectMongoDB();
   
   try {
-    const session = null;
+    const session = await getServerSession(req, res, authOptions);
     const { plan, planDetails } = req.body;
 
     console.log("Creating checkout for plan:", plan, planDetails);
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
         },
       ],
       success_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/upload`,
-      cancel_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}#pricing`,
+      cancel_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/#pricing`,
       metadata: {
         plan: plan,
         meetings_available: -1,
@@ -109,6 +109,9 @@ export default async function handler(req, res) {
           console.error("Error retrieving customer:", error);
         }
       }
+      
+      // Add customer email to checkout session
+      createLink.customer_email = session.user.email;
     }
 
     console.log("Creating Stripe checkout with config:", createLink);

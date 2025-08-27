@@ -41,16 +41,72 @@ export default async function handler(req, res) {
     const metadata = session.metadata;
     const customerName = session?.customer_details?.name;
 
-    const subscription = await stripe.subscriptions.retrieve(
-      session.subscription
-    );
+    console.log("Processing checkout.session.completed:", {
+      mode: session.mode,
+      plan: metadata.plan,
+      customer: session.customer,
+      subscription: session.subscription
+    });
 
-    // Check if the subscription is in trial period
-    const isInTrial = subscription?.status === "trialing";
+    // Handle one-time payments (one-year-pass) vs subscriptions
+    let subscription = null;
+    let isInTrial = false;
+    let trialEndsAt = null;
+    let subscriptionEndDate = null;
 
-    const trialEndsAt = isInTrial
-      ? new Date(subscription.trial_end * 1000).toISOString()
-      : null;
+    if (session.mode === 'subscription' && session.subscription) {
+      try {
+        subscription = await stripe.subscriptions.retrieve(session.subscription);
+        console.log("Retrieved subscription:", subscription.id, subscription.status);
+        
+        isInTrial = subscription?.status === "trialing";
+        
+        // Safely handle trial end date
+        if (isInTrial && subscription.trial_end) {
+          try {
+            trialEndsAt = new Date(subscription.trial_end * 1000).toISOString();
+          } catch (dateError) {
+            console.error("Error parsing trial_end:", dateError);
+            // Fallback: set trial period for Pro plan
+            if (metadata.plan === "pro") {
+              const trialEnd = new Date();
+              trialEnd.setDate(trialEnd.getDate() + 7);
+              trialEndsAt = trialEnd.toISOString();
+            }
+          }
+        }
+        
+        // Safely handle subscription end date
+        if (subscription.current_period_end) {
+          try {
+            subscriptionEndDate = new Date(subscription.current_period_end * 1000).toISOString();
+          } catch (dateError) {
+            console.error("Error parsing current_period_end:", dateError);
+            // Fallback: set subscription end date
+            if (metadata.plan === "pro") {
+              const subscriptionEnd = new Date();
+              subscriptionEnd.setDate(subscriptionEnd.getDate() + 7);
+              subscriptionEndDate = subscriptionEnd.toISOString();
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error retrieving subscription:", error);
+        // Fallback: set trial period for Pro plan
+        if (metadata.plan === "pro") {
+          isInTrial = true;
+          const trialEnd = new Date();
+          trialEnd.setDate(trialEnd.getDate() + 7);
+          trialEndsAt = trialEnd.toISOString();
+          subscriptionEndDate = trialEnd.toISOString();
+        }
+      }
+    } else if (session.mode === 'payment') {
+      // One-time payment - set end date to 12 months from now
+      const oneYearFromNow = new Date();
+      oneYearFromNow.setFullYear(oneYearFromNow.getFullYear() + 1);
+      subscriptionEndDate = oneYearFromNow.toISOString();
+    }
 
     // Determine meetings available based on plan
     let meetingsAvailable = 0;
@@ -61,12 +117,10 @@ export default async function handler(req, res) {
     }
 
     const payload = {
-      subscription_id: session.subscription,
+      subscription_id: session.subscription || null,
       variant_name: metadata.plan,
-      subscription_renews_at: new Date(
-        subscription.current_period_end * 1000
-      ).toISOString(),
-      ends_at: new Date(subscription.current_period_end * 1000).toISOString(),
+      subscription_renews_at: subscriptionEndDate,
+      ends_at: subscriptionEndDate,
       customer_id: session.customer,
       customer_name: customerName,
       meetings_available: meetingsAvailable,
@@ -74,117 +128,188 @@ export default async function handler(req, res) {
       trial_ends_at: trialEndsAt,
     };
 
+    // Get email from the session
     if (session?.customer_details?.email) {
       payload.email = session.customer_details.email;
-    }
-
-    if (session?.customer_email) {
+    } else if (session?.customer_email) {
       payload.email = session.customer_email;
     }
 
-    let message;
-    message = `🎉 New Subscription Started!
+    console.log("User payload:", payload);
 
-👤 Customer ID: ${subscription.customer}
+    let message;
+    if (session.mode === 'subscription') {
+      message = `🎉 New Subscription Started!
+
+👤 Customer ID: ${session.customer}
 📧 Email: ${payload?.email}
 ⭐ Plan: ${payload?.variant_name}
 📝 Meetings Available: ${meetingsAvailable === -1 ? 'Unlimited' : meetingsAvailable}
 👋 Customer Name: ${payload?.customer_name}`;
-    await sendTelegramNotification({ message });
+    } else {
+      message = `🎉 New One-Time Payment!
+
+👤 Customer ID: ${session.customer}
+📧 Email: ${payload?.email}
+⭐ Plan: ${payload?.variant_name}
+📝 Meetings Available: ${meetingsAvailable === -1 ? 'Unlimited' : meetingsAvailable}
+👋 Customer Name: ${payload?.customer_name}`;
+    }
+    
+    try {
+      await sendTelegramNotification({ message });
+    } catch (error) {
+      console.error("Error sending Telegram notification:", error);
+    }
 
     // Find user by email or create new one
     let user = await User.findOne({ email: payload.email });
     
     if (user) {
+      console.log("Updating existing user:", payload.email);
       await User.findOneAndUpdate(
         { email: payload.email },
         { $set: payload },
         { new: true }
       );
     } else {
+      console.log("Creating new user:", payload.email);
       await User.create(payload);
     }
+    
+    console.log("User updated/created successfully");
   }
 
   if (event.type === "customer.subscription.updated") {
-    const subscription = event.data.object;
+    try {
+      const subscription = event.data.object;
+      console.log("Processing customer.subscription.updated:", subscription.id, subscription.status);
 
-    // Check if the subscription status has changed from trial to active
-    const isInTrial = subscription?.status === "trialing";
-    const trialEndsAt = isInTrial
-      ? new Date(subscription.trial_end * 1000).toISOString()
-      : null;
+      // Check if the subscription status has changed from trial to active
+      const isInTrial = subscription?.status === "trialing";
+      let trialEndsAt = null;
 
-    const payload = {
-      is_in_trial: isInTrial,
-      trial_ends_at: trialEndsAt,
-    };
+      // Safely handle trial end date
+      if (isInTrial && subscription.trial_end) {
+        try {
+          trialEndsAt = new Date(subscription.trial_end * 1000).toISOString();
+        } catch (dateError) {
+          console.error("Error parsing trial_end in subscription.updated:", dateError);
+        }
+      }
 
-    // if the subscription has been cancelled
-    if (subscription?.cancel_at_period_end) {
-      payload.subscription_renews_at = null;
-    }
+      const payload = {
+        is_in_trial: isInTrial,
+        trial_ends_at: trialEndsAt,
+      };
 
-    await User.findOneAndUpdate(
-      { customer_id: subscription.customer },
-      { $set: payload }
-    );
-  }
-
-  if (event.type === "invoice.payment_succeeded") {
-    const invoice = event.data.object;
-    const subscriptionId = invoice.subscription;
-
-    // Retrieve full subscription details
-    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-
-    const user = await User.findOne({ customer_id: invoice.customer });
-
-    const payload = {
-      subscription_renews_at: new Date(invoice.period_end * 1000).toISOString(),
-      ends_at: subscription.cancel_at
-        ? new Date(subscription.cancel_at * 1000).toISOString()
-        : null,
-    };
-
-    // Check if this payment marks the end of a trial period
-    if (invoice.billing_reason === "subscription_cycle") {
-      payload.is_in_trial = false;
-      payload.trial_ends_at = null;
-    }
-
-    if (user) {
-      const userPlan = user.variant_name;
-      if (userPlan === "pro") {
-        payload.meetings_available = -1; // Unlimited
-      } else if (userPlan === "one-year-pass") {
-        payload.meetings_available = -1; // Unlimited
+      // if the subscription has been cancelled
+      if (subscription?.cancel_at_period_end) {
+        payload.subscription_renews_at = null;
       }
 
       await User.findOneAndUpdate(
-        { customer_id: invoice.customer },
+        { customer_id: subscription.customer },
         { $set: payload }
       );
+      
+      console.log("Subscription updated successfully");
+    } catch (error) {
+      console.error("Error processing customer.subscription.updated:", error);
+    }
+  }
+
+  if (event.type === "invoice.payment_succeeded") {
+    try {
+      const invoice = event.data.object;
+      const subscriptionId = invoice.subscription;
+      
+      console.log("Processing invoice.payment_succeeded:", invoice.id, subscriptionId);
+
+      // Retrieve full subscription details
+      let subscription = null;
+      try {
+        subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      } catch (error) {
+        console.error("Error retrieving subscription for invoice:", error);
+        return;
+      }
+
+      const user = await User.findOne({ customer_id: invoice.customer });
+
+      const payload = {
+        subscription_renews_at: null,
+        ends_at: null,
+      };
+
+      // Safely handle period end date
+      if (invoice.period_end) {
+        try {
+          payload.subscription_renews_at = new Date(invoice.period_end * 1000).toISOString();
+        } catch (dateError) {
+          console.error("Error parsing invoice period_end:", dateError);
+        }
+      }
+
+      // Safely handle subscription cancel date
+      if (subscription?.cancel_at) {
+        try {
+          payload.ends_at = new Date(subscription.cancel_at * 1000).toISOString();
+        } catch (dateError) {
+          console.error("Error parsing subscription cancel_at:", dateError);
+        }
+      }
+
+      // Check if this payment marks the end of a trial period
+      if (invoice.billing_reason === "subscription_cycle") {
+        payload.is_in_trial = false;
+        payload.trial_ends_at = null;
+      }
+
+      if (user) {
+        const userPlan = user.variant_name;
+        if (userPlan === "pro") {
+          payload.meetings_available = -1; // Unlimited
+        } else if (userPlan === "one-year-pass") {
+          payload.meetings_available = -1; // Unlimited
+        }
+
+        await User.findOneAndUpdate(
+          { customer_id: invoice.customer },
+          { $set: payload }
+        );
+        
+        console.log("Invoice payment processed successfully");
+      }
+    } catch (error) {
+      console.error("Error processing invoice.payment_succeeded:", error);
     }
   }
 
   if (event.type === "customer.subscription.deleted") {
-    const subscription = event.data.object;
+    try {
+      const subscription = event.data.object;
+      console.log("Processing customer.subscription.deleted:", subscription.id);
 
-    const payload = {
-      variant_name: "free", // Reset to free plan
-      subscription_renews_at: null,
-      ends_at: new Date().toISOString(), // Set to current date since it's canceled immediately
-      subscription_id: null, // Optional: Clear the subscription ID
-      is_in_trial: false,
-      trial_ends_at: null,
-      meetings_available: 0,
-    };
+      const payload = {
+        variant_name: "free", // Reset to free plan
+        subscription_renews_at: null,
+        ends_at: new Date().toISOString(), // Set to current date since it's canceled immediately
+        subscription_id: null, // Optional: Clear the subscription ID
+        is_in_trial: false,
+        trial_ends_at: null,
+        meetings_available: 0,
+      };
 
-    await User.findOneAndUpdate(
-      { customer_id: subscription.customer },
-      { $set: payload }
-    );
+      await User.findOneAndUpdate(
+        { customer_id: subscription.customer },
+        { $set: payload }
+      );
+      
+      console.log("Subscription deleted successfully");
+    } catch (error) {
+      console.error("Error processing customer.subscription.deleted:", error);
+    }
   }
 
   return res.status(200).json({ received: true });

@@ -17,6 +17,7 @@ import {
   getFileTypeCategory 
 } from '@/lib/audioFormats';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import SubscriptionCheck from '@/components/SubscriptionCheck';
 import { useSession } from 'next-auth/react';
 
 export default function UploadPage() {
@@ -391,17 +392,18 @@ export default function UploadPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
-        <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-slate-900 mb-4">
-            Upload Your Meeting Recording
-          </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Transform your Google Meet, Zoom, or Teams recordings into actionable meeting notes with AI-powered transcription and insights.
-          </p>
-        </div>
+      <SubscriptionCheck>
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
+          <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-slate-900 mb-4">
+              Upload Your Meeting Recording
+            </h1>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+              Transform your Google Meet, Zoom, or Teams recordings into actionable meeting notes with AI-powered transcription and insights.
+            </p>
+          </div>
 
         {/* Upload Area */}
         <Card className="mb-8">
@@ -848,6 +850,7 @@ export default function UploadPage() {
         </Card>
       </div>
     </div>
-  </ProtectedRoute>
+      </SubscriptionCheck>
+    </ProtectedRoute>
   );
 }
