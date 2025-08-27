@@ -15,10 +15,11 @@ export var PricingSection = function () {
       period: "per month",
       description: "For active remote workers",
       features: [
+        "7 day free trial (cancel anytime)",
         "Unlimited meetings",
+        "Unlimited transcriptions",
         "PDF export",
-        "Custom branding",
-        "Priority support",
+        "Link sharing"
       ],
       cta: "Start 7 Day Free Trial",
       popular: true,
@@ -30,10 +31,11 @@ export var PricingSection = function () {
       period: "one time",
       description: "For remote workers who want to save money",
       features: [
+        "12 months access",
         "Unlimited meetings",
-        "PDF export", 
-        "Custom branding",
-        "Priority support",
+        "Unlimited transcriptions",
+        "PDF export",
+        "Link sharing",
       ],
       cta: "Buy Now (12 months access)",
       popular: false,
@@ -55,7 +57,7 @@ export var PricingSection = function () {
             Simple pricing that fits remote work
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground px-4">
-            Choose the plan that works for you. Upgrade or downgrade anytime.
+            Choose the plan that works for you. Cancel anytime.
           </p>
         </div>
 
@@ -122,13 +124,13 @@ export var PricingSection = function () {
                         className="flex items-center gap-3"
                       >
                         <div className={`w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          plan.oneYearPass && featureIndex >= 4 
+                          plan.oneYearPass && featureIndex >= 5 
                             ? "bg-primary/10 text-primary" 
                             : "text-primary"
                         }`}>
                           <Check className="w-2.5 h-2.5 md:w-3 md:h-3" />
                         </div>
-                        <span className={`text-sm md:text-base ${plan.oneYearPass && featureIndex >= 4 ? "text-primary font-medium" : ""}`}>
+                        <span className={`text-sm md:text-base ${plan.oneYearPass && featureIndex >= 5 ? "text-primary font-medium" : ""}`}>
                           {feature}
                         </span>
                       </li>
