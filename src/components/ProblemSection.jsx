@@ -3,15 +3,19 @@ export var ProblemSection = function () {
     var painPoints = [
         {
             icon: Clock,
-            text: "Tired of rewatching long Zoom recordings?"
+            text: "Meetings sucking the life out of you?",
+            description: "You sit there for an hour, and by the end you're completely exhausted and still not sure what to do next."
         },
         {
             icon: Users,
-            text: "Forgetting action items from client calls?"
+            text: "Can't take notes and pay attention at the same time?",
+            description: "It takes a lot of time to understand what's been said before you take notes. And by the time you are ready, conversation already passed."
         },
         {
             icon: FileText,
-            text: "Forgetting what was discussed?"
+            // text: "Forgetting action items after calls?",
+            text: "Managers asking you to follow up after calls and you have nothing?",
+            description: "You're not alone. People even without ADHD often forget what was discussed after the meeting."
         }
     ];
     var benefits = [
@@ -28,7 +32,7 @@ export var ProblemSection = function () {
       <div className="container mx-auto px-4 relative">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent leading-tight">
-            Why remote workers love Miss Notes
+            Why people with ADHD love Miss Notes
           </h2>
         </div>
 
@@ -42,6 +46,9 @@ export var ProblemSection = function () {
                   </div>
                 </div>
                 <p className="text-lg text-muted-foreground leading-relaxed font-medium">{point.text}</p>
+                <span className="text-sm text-muted-foreground">
+                  {point.description}
+                </span>
               </div>
             </div>); })}
         </div>
@@ -50,7 +57,7 @@ export var ProblemSection = function () {
         <div className="text-center max-w-4xl mx-auto">
           <div className="bg-card/60 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-medium border border-border/50">
             <p className="text-xl md:text-2xl mb-10 text-foreground font-medium leading-relaxed">
-              Miss Notes does the most boring work for you - upload your call, and in 2 minutes you'll get:
+              Miss Notes does the most boring work for you - upload your meeting recording, and in 2 minutes you'll get:
             </p>
             <div className="grid sm:grid-cols-3 gap-8">
               {benefits.map(function (benefit, index) { return (<div key={index} className="group flex items-center justify-center sm:justify-start gap-4 animate-fade-up hover:scale-105 transition-all duration-300" style={{ animationDelay: "".concat((index + 3) * 150, "ms") }}>

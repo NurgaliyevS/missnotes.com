@@ -6,17 +6,17 @@ export var DemoSection = function () {
         {
             icon: Upload,
             title: "Upload your meeting recording",
-            description: "Zoom, Google Meet, Teams"
+            description: "Zoom, Google Meet, Teams, even your phone’s voice recorder."
         },
         {
             icon: Zap,
-            title: "AI Transcribes & Summarizes instantly",
-            description: "Smart analysis in under 2 minutes"
+            title: "Transcript, summary, and action items",
+            description: "Get the whole transcript of the meeting, summary of the recording, and actions items with deadlines."
         },
         {
             icon: Share2,
-            title: "Share as link or PDF",
-            description: "Send to your client/team immediately"
+            title: "Share or save notes",
+            description: "Get the notes as a link or save them as a PDF. Keep everyone on the same page without extra work."
         }
     ];
     return (<section className="py-16 relative overflow-hidden">
@@ -28,7 +28,7 @@ export var DemoSection = function () {
       <div className="container mx-auto px-4 relative">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-            From recording to actionable notes in{" "}
+            From meeting recording to actionable notes in{" "}
             <span className="bg-gradient-primary bg-clip-text text-transparent">
               3 clicks
             </span>

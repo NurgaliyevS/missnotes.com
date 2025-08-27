@@ -48,7 +48,7 @@ export const defaultProPlan = {
   plan: "pro",
   price: "$7",
   period: "per month",
-  description: "For active remote workers",
+  description: "For active ADHDers",
   features: [
     "Unlimited meetings",
     "PDF export",

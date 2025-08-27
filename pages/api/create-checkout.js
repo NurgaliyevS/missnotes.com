@@ -29,13 +29,13 @@ export default async function handler(req, res) {
         price: 700, // $7.00 in cents
         interval: 'month',
         trial_period_days: 7,
-        description: "For active remote workers. Unlimited meetings, PDF export, custom branding, priority support."
+        description: "For ADHDers. Unlimited meetings, PDF export, custom branding, priority support."
       },
       'one-year-pass': {
         price: 4900, // $49.00 in cents
         interval: 'month',
         trial_period_days: 0,
-        description: "For remote workers who want to save money. Unlimited meetings, PDF export, custom branding, priority support. 12 months access."
+        description: "For ADHDers who want to save money. Unlimited meetings, PDF export, custom branding, priority support. 12 months access."
       }
     };
 

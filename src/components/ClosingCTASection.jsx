@@ -11,7 +11,7 @@ export var ClosingCTASection = function () {
             </span>
           </h2>
           <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-            Join remote workers who already save hours every week with Miss Notes.
+            Join ADHDers who already save hours every week with Miss Notes.
           </p>
           <Button 
             variant="hero" 

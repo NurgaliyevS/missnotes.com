@@ -13,7 +13,7 @@ export var PricingSection = function () {
       plan: "pro",
       price: "$7",
       period: "per month",
-      description: "For active remote workers",
+      description: "For active ADHDers",
       features: [
         "7 day free trial (cancel anytime)",
         "Unlimited meetings",
@@ -29,7 +29,7 @@ export var PricingSection = function () {
       plan: "one-year-pass",
       price: "$49",
       period: "one time",
-      description: "For remote workers who want to save money",
+      description: "For ADHDers who want to save money",
       features: [
         "12 months access",
         "Unlimited meetings",
@@ -54,10 +54,10 @@ export var PricingSection = function () {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 md:mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">
-            Simple pricing that fits remote work
+            Simple pricing that fits ADHDers
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground px-4">
-            Choose the plan that works for you. Cancel anytime.
+            Choose the plan that fits you. Cancel anytime.
           </p>
         </div>
 

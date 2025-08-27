@@ -13,7 +13,7 @@ export var HeroSection = function () {
           <div className="animate-fade-up">
             <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200 mb-4">
               <Rocket className="w-3 h-3 mr-2" />
-              From remote worker, for remote workers
+              From ADHDers, for ADHDers
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-4 sm:mb-6">
               Upload meeting audio. Get{" "}
@@ -22,15 +22,8 @@ export var HeroSection = function () {
               </span>{" "}
               in 2 minutes. Share instantly.
             </h1>
-            {/* <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6">
-              Never leave a meeting{" "}
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
-                without clear notes
-              </span>{" "}
-              again.
-            </h1> */}
             <p className="text-lg sm:text-xl text-muted-foreground mb-6 sm:mb-8 leading-relaxed">
-              Remote workers' fastest way to turn meeting recordings into
+              Fastest way to turn meeting recordings into
               summaries + action items. No setup, no distractions.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
@@ -49,7 +42,7 @@ export var HeroSection = function () {
                   className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full border-2 hover:bg-slate-50 transition-colors h-12 sm:h-14 flex items-center justify-center rounded-lg font-medium"
                 >
                   <Upload className="h-4 w-4 mr-2" />
-                  Upload Recording
+                  Upload Your Audio Meeting Recording
                 </Button>
               </Link>
             </div>

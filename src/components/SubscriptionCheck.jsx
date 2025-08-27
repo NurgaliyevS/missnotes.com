@@ -193,7 +193,7 @@ export default function SubscriptionCheck({ children }) {
                 </span>
               </div>
               <p className="text-sm md:text-base text-muted-foreground">
-                For active remote workers
+                For active ADHDers
               </p>
             </div>
             <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
@@ -277,7 +277,7 @@ export default function SubscriptionCheck({ children }) {
                 </div>
               </div>
               <p className="text-sm md:text-base text-muted-foreground">
-                For remote workers who want to save money
+                For ADHDers who want to save money
               </p>
             </div>
             <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
