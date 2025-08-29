@@ -2,6 +2,7 @@ import { SessionProvider } from "next-auth/react";
 import { Header } from "../src/components/Header";
 import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
+import CrispChat from "@/components/CrispChat";
 
 export default function App({
   Component,
@@ -18,6 +19,7 @@ export default function App({
         data-domain="missnotes.com"
         src="https://datafa.st/js/script.js"
       ></script>
+      <CrispChat websiteId="04ba1888-06e9-41c9-bffa-3804767583e5" />
     </SessionProvider>
   );
 }
