@@ -475,7 +475,7 @@ export default function UploadPage() {
                     <div className="w-full max-w-md mx-auto">
                       <Progress value={transcriptionProgress} className="mb-2" />
                       <p className="text-sm text-slate-600">
-                        Transcribing with OpenAI Whisper... {transcriptionProgress}%
+                        Transcribing... {transcriptionProgress}%
                       </p>
                     </div>
                   )}
