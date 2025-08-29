@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, FileAudio, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Target, FileText, Share2, Copy, User } from 'lucide-react';
+import { Upload, FileAudio, CheckCircle, AlertCircle, Loader2, Play, Pause, Download, Sparkles, Calendar, Users, Clock, FileText, Share2, Copy, User } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -252,7 +252,7 @@ export default function UploadPage() {
   const downloadSummary = () => {
     if (!summaryResult) return;
     
-    const content = `AI Meeting Summary\n\n` +
+    const content = `Meeting Summary\n\n` +
                    `Meeting: ${meetingTitle}\n` +
                    `Date: ${meetingDate}\n` +
                    `Generated: ${new Date(summaryResult.timestamp).toLocaleString()}\n\n` +
@@ -276,7 +276,7 @@ export default function UploadPage() {
     
     // Add title
     doc.setFontSize(20);
-    doc.text('AI Meeting Summary', 20, 30);
+    doc.text('Meeting Summary', 20, 30);
     
     // Add meeting details
     doc.setFontSize(12);
@@ -564,10 +564,10 @@ export default function UploadPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-purple-600" />
-                AI Meeting Summary
+                Meeting Summary
               </CardTitle>
               <CardDescription>
-                Generated using GPT-4 - Meeting insights, decisions, and action items
+                Meeting insights, decisions, and action items
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -588,10 +588,10 @@ export default function UploadPage() {
                 </div>
                 <div className="text-center p-4 bg-purple-50 rounded-lg">
                   <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <Target className="h-6 w-6 text-purple-600" />
+                    <Clock className="h-6 w-6 text-purple-600" />
                   </div>
-                  <p className="text-sm text-purple-600">Model</p>
-                  <p className="font-medium text-slate-900">GPT-4o-mini</p>
+                  <p className="text-sm text-purple-600">Duration</p>
+                  <p className="font-medium text-slate-900">{transcriptionResult ? formatDuration(transcriptionResult.duration) : 'N/A'}</p>
                 </div>
               </div>
 
@@ -701,9 +701,6 @@ export default function UploadPage() {
                 <CheckCircle className="h-5 w-5 text-green-600" />
                 Transcription Complete
               </CardTitle>
-              <CardDescription>
-                Transcription using OpenAI Whisper API
-              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4 mb-6">

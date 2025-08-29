@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Calendar, Users, Target, FileText, Download, ArrowLeft } from 'lucide-react';
+import { Calendar, Users, Clock, FileText, Download, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import jsPDF from 'jspdf';
 import Link from 'next/link';
+
+// Helper function to format duration
+const formatDuration = (seconds) => {
+  if (!seconds) return 'N/A';
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+};
 
 export default function SharePage() {
   const router = useRouter();
@@ -39,7 +47,7 @@ export default function SharePage() {
   const downloadSummary = () => {
     if (!meetingData) return;
     
-    const content = `AI Meeting Summary\n\n` +
+    const content = `Meeting Summary\n\n` +
                    `Meeting: ${meetingData.title}\n` +
                    `Date: ${meetingData.date}\n` +
                    `Generated: ${new Date(meetingData.timestamp).toLocaleString()}\n\n` +
@@ -63,7 +71,7 @@ export default function SharePage() {
     
     // Add title
     doc.setFontSize(20);
-    doc.text('AI Meeting Summary', 20, 30);
+    doc.text('Meeting Summary', 20, 30);
     
     // Add meeting details
     doc.setFontSize(12);
@@ -117,6 +125,27 @@ export default function SharePage() {
     
     // Save the PDF
     doc.save(`${meetingData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_summary.pdf`);
+  };
+
+  const downloadTranscript = () => {
+    if (!meetingData.transcription) return;
+    
+    const content = `Meeting Transcript\n\n` +
+                   `Meeting: ${meetingData.title}\n` +
+                   `Date: ${meetingData.date}\n` +
+                   `Duration: ${formatDuration(meetingData.transcription.duration)}\n` +
+                   `Language: ${meetingData.transcription.language || 'Auto'}\n\n` +
+                   `Full Transcript:\n${meetingData.transcription.transcription}`;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${meetingData.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_transcript.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   if (loading) {
@@ -195,10 +224,10 @@ export default function SharePage() {
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                  <Target className="h-6 w-6 text-purple-600" />
+                  <Clock className="h-6 w-6 text-purple-600" />
                 </div>
-                <p className="text-sm text-purple-600">Model</p>
-                <p className="font-medium text-slate-900">GPT-4o-mini</p>
+                <p className="text-sm text-purple-600">Duration</p>
+                <p className="font-medium text-slate-900">{meetingData.transcription ? formatDuration(meetingData.transcription.duration) : 'N/A'}</p>
               </div>
             </div>
 
@@ -255,9 +284,6 @@ export default function SharePage() {
                 <FileText className="h-5 w-5 text-green-600" />
                 Full Transcript
               </CardTitle>
-              <CardDescription>
-                Transcription using OpenAI Whisper API
-              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="bg-slate-50 p-4 rounded-lg max-h-96 overflow-y-auto">
@@ -265,6 +291,14 @@ export default function SharePage() {
                   {meetingData.transcription.transcription}
                 </p>
               </div>
+
+
+            <div className="mt-6 flex gap-2 justify-center">
+              <Button onClick={downloadTranscript} variant="outline">
+                <Download className="h-4 w-4 mr-2" />
+                Download Transcript
+              </Button>
+            </div>
             </CardContent>
           </Card>
         )}
