@@ -186,7 +186,7 @@ export default function UploadPage() {
       const result = await response.json();
       setSummaryResult(result);
 
-      toast.success("AI Summary generated!");
+      toast.success("Summary generated!");
 
     } catch (error) {
       console.error('Summary generation error:', error);
@@ -544,12 +544,12 @@ export default function UploadPage() {
                   {generatingSummary ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Generating AI Summary...
+                      Generating Summary & Action Items...
                     </>
                   ) : (
                     <>
                       <Sparkles className="h-4 w-4 mr-2" />
-                      Generate AI Summary & Action Items
+                      Generate Summary & Action Items
                     </>
                   )}
                 </Button>
