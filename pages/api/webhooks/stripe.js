@@ -206,6 +206,8 @@ export default async function handler(req, res) {
       // if the subscription has been cancelled
       if (subscription?.cancel_at_period_end) {
         payload.subscription_renews_at = null;
+        // Keep meetings_available as -1 until the subscription actually ends
+        // The subscription will still be active until the current period ends
       }
 
       await User.findOneAndUpdate(
@@ -238,8 +240,8 @@ export default async function handler(req, res) {
       const user = await User.findOne({ customer_id: invoice.customer });
 
       const payload = {
-        subscription_renews_at: null,
-        ends_at: null,
+        // Don't reset subscription_renews_at to null initially
+        // It will be set below if we have a valid period_end
       };
 
       // Safely handle period end date

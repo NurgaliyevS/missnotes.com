@@ -49,6 +49,12 @@ export default async function handler(req, res) {
     let isActive = false;
     let meetingsAvailable = user.meetings_available || 0;
 
+    // If user has unlimited meetings (-1), they have an active subscription
+    if (user.meetings_available === -1) {
+      isActive = true;
+      meetingsAvailable = -1;
+    }
+
     // Check if user is in trial period
     if (user.is_in_trial && user.trial_ends_at) {
       const trialEndsAt = new Date(user.trial_ends_at);
@@ -58,7 +64,7 @@ export default async function handler(req, res) {
       }
     }
 
-    // Check if subscription is still active
+    // Check if subscription is still active based on renewal date
     if (user.subscription_renews_at) {
       const renewsAt = new Date(user.subscription_renews_at);
       if (renewsAt > new Date()) {
@@ -78,8 +84,17 @@ export default async function handler(req, res) {
       }
     }
 
-    // If subscription has ended, reset to free
-    if (!isActive && user.variant_name !== "free") {
+    // Only reset to free if user has a paid plan but no active subscription AND no unlimited meetings
+    if (!isActive && user.variant_name !== "free" && user.meetings_available !== -1) {
+      console.log("Resetting user to free plan:", {
+        email: session.user.email,
+        variant_name: user.variant_name,
+        meetings_available: user.meetings_available,
+        isActive: isActive,
+        subscription_renews_at: user.subscription_renews_at,
+        ends_at: user.ends_at
+      });
+      
       await User.findOneAndUpdate(
         { email: session.user.email },
         { 
@@ -101,6 +116,14 @@ export default async function handler(req, res) {
         ends_at: null
       });
     }
+
+    console.log("Subscription status check result:", {
+      email: session.user.email,
+      variant_name: user.variant_name,
+      meetings_available: meetingsAvailable,
+      isActive: isActive,
+      original_meetings_available: user.meetings_available
+    });
 
     // Return current subscription status
     return res.status(200).json({
