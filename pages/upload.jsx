@@ -16,6 +16,10 @@ import {
   validateFile,
   getFileTypeCategory 
 } from '@/lib/audioFormats';
+import { 
+  needsChunking, 
+  transcribeChunkedFile 
+} from '@/lib/fileChunking';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import SubscriptionCheck from '@/components/SubscriptionCheck';
 import { useSession } from 'next-auth/react';
@@ -29,6 +33,8 @@ export default function UploadPage() {
   const [transcribing, setTranscribing] = useState(false);
   const [transcriptionResult, setTranscriptionResult] = useState(null);
   const [transcriptionProgress, setTranscriptionProgress] = useState(0);
+  const [transcriptionStep, setTranscriptionStep] = useState('');
+  const [transcriptionMessage, setTranscriptionMessage] = useState('');
   const [generatingSummary, setGeneratingSummary] = useState(false);
   const [summaryResult, setSummaryResult] = useState(null);
   const [meetingTitle, setMeetingTitle] = useState('');
@@ -113,45 +119,81 @@ export default function UploadPage() {
 
     setTranscribing(true);
     setTranscriptionProgress(0);
+    setTranscriptionStep('');
+    setTranscriptionMessage('');
 
     try {
-      // Create FormData
-      const formData = new FormData();
-      formData.append('file', file);
-
-      // Simulate transcription progress
-      const progressInterval = setInterval(() => {
-        setTranscriptionProgress(prev => {
-          if (prev >= 85) {
-            clearInterval(progressInterval);
-            return 85;
-          }
-          return prev + 5;
+      // Check if file needs chunking
+      if (needsChunking(file)) {
+        console.log('Large file detected, using chunked transcription:', {
+          filename: file.name,
+          size: file.size,
+          needsChunking: true
         });
-      }, 500);
 
-      // Call transcription API
-      const response = await fetch('/api/transcribe', {
-        method: 'POST',
-        body: formData,
-      });
+        // Use chunked transcription for large files
+        const result = await transcribeChunkedFile(file, (progress) => {
+          setTranscriptionProgress(progress.progress);
+          setTranscriptionStep(progress.step);
+          setTranscriptionMessage(progress.message);
+        });
 
-      clearInterval(progressInterval);
+        setTranscriptionResult(result);
+        toast.success(`Successfully transcribed large file ${file.name} using chunked processing`);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Transcription failed');
+      } else {
+        console.log('Small file, using standard transcription:', {
+          filename: file.name,
+          size: file.size,
+          needsChunking: false
+        });
+
+        // Use standard transcription for small files
+        setTranscriptionStep('processing');
+        setTranscriptionMessage('Transcribing audio...');
+
+        // Create FormData
+        const formData = new FormData();
+        formData.append('file', file);
+
+        // Simulate transcription progress
+        const progressInterval = setInterval(() => {
+          setTranscriptionProgress(prev => {
+            if (prev >= 85) {
+              clearInterval(progressInterval);
+              return 85;
+            }
+            return prev + 5;
+          });
+        }, 500);
+
+        // Call transcription API
+        const response = await fetch('/api/transcribe', {
+          method: 'POST',
+          body: formData,
+        });
+
+        clearInterval(progressInterval);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Transcription failed');
+        }
+
+        const result = await response.json();
+        setTranscriptionResult(result);
+        setTranscriptionProgress(100);
+        setTranscriptionStep('complete');
+        setTranscriptionMessage('Transcription completed');
+
+        toast.success(`Successfully transcribed ${file.name}`);
       }
-
-      const result = await response.json();
-      setTranscriptionResult(result);
-      setTranscriptionProgress(100);
-
-      toast.success(`Successfully transcribed ${file.name}`);
 
     } catch (error) {
       console.error('Transcription error:', error);
       toast.error(error.message || "An error occurred during transcription.");
+      setTranscriptionStep('error');
+      setTranscriptionMessage('Transcription failed');
     } finally {
       setTranscribing(false);
     }
@@ -202,6 +244,8 @@ export default function UploadPage() {
     setSummaryResult(null);
     setUploadProgress(0);
     setTranscriptionProgress(0);
+    setTranscriptionStep('');
+    setTranscriptionMessage('');
     setMeetingTitle('');
     setMeetingDate('');
     setShareableLink('');
@@ -459,6 +503,11 @@ export default function UploadPage() {
                       <p className="font-medium text-slate-700">{file.name}</p>
                       <p className="text-sm text-slate-500">{formatFileSize(file.size)}</p>
                       <p className="text-xs text-slate-400">{file.type}</p>
+                      {needsChunking(file) && (
+                        <p className="text-xs text-orange-600 mt-1">
+                          ⚠️ Large file will be processed in chunks
+                        </p>
+                      )}
                     </div>
                   </div>
                   
@@ -475,8 +524,18 @@ export default function UploadPage() {
                     <div className="w-full max-w-md mx-auto">
                       <Progress value={transcriptionProgress} className="mb-2" />
                       <p className="text-sm text-slate-600">
-                        Transcribing... {transcriptionProgress}%
+                        {transcriptionMessage || 'Transcribing...'} {Math.round(transcriptionProgress)}%
                       </p>
+                      {transcriptionStep && (
+                        <p className="text-xs text-slate-500 mt-1 capitalize">
+                          Step: {transcriptionStep.replace(/([A-Z])/g, ' $1').trim()}
+                        </p>
+                      )}
+                      {needsChunking(file) && (
+                        <p className="text-xs text-blue-600 mt-1">
+                          📦 Large file - using chunked processing
+                        </p>
+                      )}
                     </div>
                   )}
                   
