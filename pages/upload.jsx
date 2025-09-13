@@ -503,11 +503,6 @@ export default function UploadPage() {
                       <p className="font-medium text-slate-700">{file.name}</p>
                       <p className="text-sm text-slate-500">{formatFileSize(file.size)}</p>
                       <p className="text-xs text-slate-400">{file.type}</p>
-                      {needsChunking(file) && (
-                        <p className="text-xs text-orange-600 mt-1">
-                          ⚠️ Large file will be processed in chunks
-                        </p>
-                      )}
                     </div>
                   </div>
                   

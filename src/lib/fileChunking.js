@@ -1,7 +1,7 @@
 // File chunking utility for large audio files
 // Splits files into chunks that can be processed by the chunked transcription API
 
-const CHUNK_SIZE = 12 * 1024 * 1024; // 12MB chunks (optimized for faster processing)
+const CHUNK_SIZE = 10 * 1024 * 1024; // 12MB chunks (optimized for faster processing)
 const OVERLAP_SIZE = 1024 * 1024; // 1MB overlap to avoid cutting words
 
 /**
