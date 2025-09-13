@@ -3,6 +3,9 @@ import fs from 'fs';
 import OpenAI from 'openai';
 import { MAX_FILE_SIZE, isSupportedFormat, getMimeTypeFromExtension } from '@/lib/audioFormats';
 
+// Vercel has a 4.5MB payload limit, so we set chunk limit to 4MB to be safe
+const CHUNK_MAX_SIZE = 4 * 1024 * 1024; // 4MB limit for individual chunks
+
 // Disable default body parser for file uploads
 export const config = {
 	api: {
@@ -22,9 +25,9 @@ export default async function handler(req, res) {
 	let parsedFiles;
 
 	try {
-		// Parse the form data
+		// Parse the form data with chunk-appropriate size limit
 		const form = formidable({
-			maxFileSize: MAX_FILE_SIZE,
+			maxFileSize: CHUNK_MAX_SIZE,
 			keepExtensions: true,
 		});
 
@@ -54,10 +57,10 @@ export default async function handler(req, res) {
 			});
 		}
 
-		if (totalChunks < 1 || totalChunks > 100) {
+		if (totalChunks < 1 || totalChunks > 200) {
 			return res.status(400).json({
 				error: 'Invalid total chunks',
-				details: 'totalChunks must be between 1 and 100'
+				details: 'totalChunks must be between 1 and 200 (increased to accommodate smaller chunks)'
 			});
 		}
 
@@ -87,6 +90,16 @@ export default async function handler(req, res) {
 			totalChunks,
 			sessionId
 		});
+
+		// Validate chunk size for Vercel compatibility
+		if (audioFile.size > CHUNK_MAX_SIZE) {
+			return res.status(413).json({
+				error: 'Chunk too large for Vercel',
+				details: `Chunk size ${audioFile.size} bytes exceeds Vercel's 4.5MB limit. Maximum allowed: ${CHUNK_MAX_SIZE} bytes`,
+				chunkIndex,
+				totalChunks
+			});
+		}
 
 		// Validate file type
 		if (!isSupportedFormat(audioFile.mimetype, audioFile.originalFilename)) {

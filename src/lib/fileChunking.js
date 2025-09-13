@@ -1,8 +1,8 @@
 // File chunking utility for large audio files
 // Splits files into chunks that can be processed by the chunked transcription API
 
-const CHUNK_SIZE = 10 * 1024 * 1024; // 12MB chunks (optimized for faster processing)
-const OVERLAP_SIZE = 1024 * 1024; // 1MB overlap to avoid cutting words
+const CHUNK_SIZE = 4 * 1024 * 1024; // 4MB chunks (Vercel limit is 4.5MB)
+const OVERLAP_SIZE = 512 * 1024; // 512KB overlap to avoid cutting words
 
 /**
  * Generate a unique session ID for chunking operations
@@ -18,7 +18,8 @@ export function generateSessionId() {
  * @returns {boolean} True if file needs chunking
  */
 export function needsChunking(file) {
-  return file.size > CHUNK_SIZE;
+  // Use a more conservative threshold to ensure we stay well under Vercel's 4.5MB limit
+  return file.size > (CHUNK_SIZE - OVERLAP_SIZE);
 }
 
 /**
@@ -50,10 +51,12 @@ export async function chunkAudioFile(file, sessionId = null) {
     }];
   }
 
-  console.log('Chunking large file:', {
+  console.log('Chunking large file for Vercel compatibility:', {
     filename: file.name,
     size: file.size,
-    sessionId: actualSessionId
+    sessionId: actualSessionId,
+    chunkSize: CHUNK_SIZE,
+    overlapSize: OVERLAP_SIZE
   });
 
   const chunks = [];
