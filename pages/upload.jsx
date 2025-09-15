@@ -28,7 +28,6 @@ export default function UploadPage() {
   const { data: session } = useSession();
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [transcribing, setTranscribing] = useState(false);
   const [transcriptionResult, setTranscriptionResult] = useState(null);
@@ -41,6 +40,11 @@ export default function UploadPage() {
   // by default set the meeting date to the current date
   const [meetingDate, setMeetingDate] = useState(new Date().toISOString().split('T')[0]);
   const [shareableLink, setShareableLink] = useState('');
+  
+  // Upload states
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadResult, setUploadResult] = useState(null);
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -86,36 +90,17 @@ export default function UploadPage() {
   const handleUpload = async () => {
     if (!file) return;
 
-    setUploading(false);
     setUploadProgress(0);
     handleTranscription();
-    // Simulate upload progress
-    // const interval = setInterval(() => {
-    //   setUploadProgress(prev => {
-    //     if (prev >= 90) {
-    //       clearInterval(interval);
-    //       return 90;
-    //     }
-    //     return prev + 10;
-    //   });
-    // }, 200);
-
-    // // Simulate upload completion
-    // setTimeout(() => {
-    //   setUploadProgress(100);
-    //   setUploading(false);
-    //   toast({
-    //     title: "Upload successful!",
-    //     description: "Your recording has been uploaded and is being processed.",
-    //   });
-      
-    //   // Start transcription automatically
-    //   handleTranscription();
-    // }, 3000);
   };
 
   const handleTranscription = async () => {
     if (!file) return;
+    handleTranscriptionWithFile(file);
+  };
+
+  const handleTranscriptionWithFile = async (fileToTranscribe) => {
+    if (!fileToTranscribe) return;
 
     setTranscribing(true);
     setTranscriptionProgress(0);
@@ -124,27 +109,27 @@ export default function UploadPage() {
 
     try {
       // Check if file needs chunking
-      if (needsChunking(file)) {
+      if (needsChunking(fileToTranscribe)) {
         console.log('Large file detected, using chunked transcription:', {
-          filename: file.name,
-          size: file.size,
+          filename: fileToTranscribe.name,
+          size: fileToTranscribe.size,
           needsChunking: true
         });
 
         // Use chunked transcription for large files
-        const result = await transcribeChunkedFile(file, (progress) => {
+        const result = await transcribeChunkedFile(fileToTranscribe, (progress) => {
           setTranscriptionProgress(progress.progress);
           setTranscriptionStep(progress.step);
           setTranscriptionMessage(progress.message);
         });
 
         setTranscriptionResult(result);
-        toast.success(`Successfully transcribed large file ${file.name} using chunked processing`);
+        toast.success(`Successfully transcribed large file ${fileToTranscribe.name} using chunked processing`);
 
       } else {
         console.log('Small file, using standard transcription:', {
-          filename: file.name,
-          size: file.size,
+          filename: fileToTranscribe.name,
+          size: fileToTranscribe.size,
           needsChunking: false
         });
 
@@ -154,7 +139,7 @@ export default function UploadPage() {
 
         // Create FormData
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', fileToTranscribe);
 
         // Simulate transcription progress
         const progressInterval = setInterval(() => {
@@ -186,7 +171,7 @@ export default function UploadPage() {
         setTranscriptionStep('complete');
         setTranscriptionMessage('Transcription completed');
 
-        toast.success(`Successfully transcribed ${file.name}`);
+        toast.success(`Successfully transcribed ${fileToTranscribe.name}`);
       }
 
     } catch (error) {
@@ -434,6 +419,66 @@ export default function UploadPage() {
     }
   };
 
+  // Direct upload handler using presigned URL
+const handleFileUpload = async () => {
+  if (!selectedFile) return;
+
+  setUploading(true);
+  setUploadResult(null);
+
+  try {
+    // Step 1: Ask backend for presigned upload URL
+    const urlRes = await fetch("/api/file/upload-url", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        filename: selectedFile.name,
+        mimetype: selectedFile.type,
+      }),
+    });
+
+    const { uploadUrl, fileUrl, error } = await urlRes.json();
+    if (error) throw new Error(error);
+
+    // Step 2: Upload file directly to Cloudflare R2
+    const uploadRes = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": selectedFile.type,
+        "Content-Length": selectedFile.size.toString(),
+      },
+      body: selectedFile, // raw file, not base64
+    });
+
+    if (!uploadRes.ok) {
+      throw new Error(`Upload failed with status ${uploadRes.status}`);
+    }
+
+     // Step 3: Success – show user final file URL and start transcription
+     setUploadResult({
+       success: true,
+       message: "File uploaded successfully!",
+       url: fileUrl,
+     });
+     toast.success("File uploaded successfully! Starting transcription...");
+     
+     // Set the file and start transcription
+     setFile(selectedFile);
+     
+     // Start transcription immediately with the file
+     handleTranscriptionWithFile(selectedFile);
+  } catch (error) {
+    setUploadResult({
+      success: false,
+      message: error.message,
+    });
+    toast.error("Upload failed");
+  } finally {
+    setUploading(false);
+  }
+};
+
+
   return (
     <ProtectedRoute>
       <SubscriptionCheck>
@@ -449,69 +494,124 @@ export default function UploadPage() {
             </p>
           </div>
 
-        {/* Upload Area */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Upload className="h-5 w-5" />
-              Recording Upload
-            </CardTitle>
-                      <CardDescription>
-            Supported formats: MP3, M4A, WAV, OGG, FLAC, AAC, AIFF and many more audio formats
-          </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div
-              className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                dragActive 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-slate-300 hover:border-slate-400'
-              }`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-            >
-              {!file ? (
-                <div>
-                  <Upload className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                  <p className="text-lg font-medium text-slate-700 mb-2">
-                    Drop your recording file here
-                  </p>
-                  <p className="text-slate-500 mb-4">
-                    or click to browse files
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => document.getElementById('file-input').click()}
-                  >
-                    Choose File
-                  </Button>
-                  <input
-                    id="file-input"
-                    type="file"
-                    accept={SUPPORTED_EXTENSIONS}
-                    onChange={handleFileInput}
-                    className="hidden"
-                  />
-                </div>
-              ) : (
+          {/* Main Upload Section */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Upload className="h-5 w-5" />
+                Upload Your Recording
+              </CardTitle>
+              <CardDescription>
+                Upload your meeting recording to get started with transcription
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="max-w-md mx-auto">
                 <div className="space-y-4">
-                  <div className="flex items-center justify-center gap-3">
-                    {getFileIcon(file.type)}
-                    <div className="text-left">
-                      <p className="font-medium text-slate-700">{file.name}</p>
-                      <p className="text-sm text-slate-500">{formatFileSize(file.size)}</p>
-                      <p className="text-xs text-slate-400">{file.type}</p>
+                  <div>
+                    <Label htmlFor="file-input">Select Audio File</Label>
+                    <div
+                      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
+                        dragActive 
+                          ? 'border-blue-500 bg-blue-50' 
+                          : 'border-slate-300 hover:border-slate-400'
+                      }`}
+                      onDragEnter={handleDrag}
+                      onDragLeave={handleDrag}
+                      onDragOver={handleDrag}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setDragActive(false);
+                        
+                        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                          setSelectedFile(e.dataTransfer.files[0]);
+                        }
+                      }}
+                      onClick={() => document.getElementById('file-input').click()}
+                    >
+                      {!selectedFile ? (
+                        <div>
+                          <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
+                          <p className="text-sm font-medium text-slate-700 mb-1">
+                            Drop your audio file here
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            or click to browse files
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center gap-3">
+                          {getFileIcon(selectedFile.type)}
+                          <div className="text-left">
+                            <p className="text-sm font-medium text-slate-700">{selectedFile.name}</p>
+                            <p className="text-xs text-slate-500">{formatFileSize(selectedFile.size)}</p>
+                            <p className="text-xs text-slate-400">{selectedFile.type}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
+                    <input
+                      id="file-input"
+                      type="file"
+                      accept={SUPPORTED_EXTENSIONS}
+                      onChange={(e) => setSelectedFile(e.target.files[0])}
+                      className="hidden"
+                    />
+                    <p className="text-xs text-slate-500 mt-2">
+                      Supported formats: MP3, M4A, WAV, OGG, FLAC, AAC, AIFF and many more
+                    </p>
                   </div>
                   
-                  {uploading && (
-                    <div className="w-full max-w-md mx-auto">
-                      <Progress value={uploadProgress} className="mb-2" />
-                      <p className="text-sm text-slate-600">
-                        Uploading... {uploadProgress}%
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={handleFileUpload} 
+                      disabled={!selectedFile || uploading}
+                      className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    >
+                      {uploading ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Uploading...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-4 w-4 mr-2" />
+                          Upload & Transcribe
+                        </>
+                      )}
+                    </Button>
+                    {selectedFile && !uploading && (
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setSelectedFile(null)}
+                        className="px-3"
+                      >
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                  
+                  {uploadResult && (
+                    <div className={`p-3 rounded-lg ${
+                      uploadResult.success 
+                        ? 'bg-green-50 text-green-800 border border-green-200' 
+                        : 'bg-red-50 text-red-800 border border-red-200'
+                    }`}>
+                      <p className="text-sm font-medium">
+                        {uploadResult.success ? '✅ Upload Successful!' : '❌ Upload Failed'}
                       </p>
+                      {uploadResult.message && (
+                        <p className="text-xs mt-1">{uploadResult.message}</p>
+                      )}
+                      {uploadResult.url && (
+                        <p className="text-xs mt-1 break-all">
+                          URL: <a href={uploadResult.url} target="_blank" rel="noopener noreferrer" className="underline">
+                            {uploadResult.url}
+                          </a>
+                        </p>
+                      )}
                     </div>
                   )}
 
@@ -533,25 +633,11 @@ export default function UploadPage() {
                       )}
                     </div>
                   )}
-                  
-                  <div className="flex gap-2 justify-center">
-                    {!uploading && !transcribing && (
-                      <>
-                        <Button onClick={handleUpload} className="bg-blue-600 hover:bg-blue-700">
-                          <Upload className="h-4 w-4 mr-2" />
-                          Upload & Transcribe
-                        </Button>
-                        <Button variant="outline" onClick={removeFile}>
-                          Remove File
-                        </Button>
-                      </>
-                    )}
-                  </div>
                 </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+            </CardContent>
+          </Card>
+
 
         {/* Meeting Details Form */}
         {transcriptionResult && !summaryResult && (
