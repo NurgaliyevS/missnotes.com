@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,10 +12,21 @@ export default function SubscriptionCheck({ children }) {
   const [userSubscription, setUserSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [checkoutLoading, setCheckoutLoading] = useState(null);
+  
+  // Cache to prevent multiple API calls
+  const subscriptionCache = useRef(null);
+  const lastCheckedEmail = useRef(null);
 
   useEffect(() => {
     if (session?.user?.email) {
-      checkUserSubscription();
+      // Only check if we haven't checked for this email yet, or if the email changed
+      if (lastCheckedEmail.current !== session.user.email || !subscriptionCache.current) {
+        checkUserSubscription();
+      } else {
+        // Use cached data
+        setUserSubscription(subscriptionCache.current);
+        setLoading(false);
+      }
     }
   }, [session]);
 
@@ -28,15 +39,23 @@ export default function SubscriptionCheck({ children }) {
         },
       });
 
+      let subscriptionData;
       if (response.ok) {
-        const data = await response.json();
-        setUserSubscription(data);
+        subscriptionData = await response.json();
       } else {
-        setUserSubscription({ variant_name: "free", meetings_available: 0 });
+        subscriptionData = { variant_name: "free", meetings_available: 0 };
       }
+      
+      // Cache the result
+      subscriptionCache.current = subscriptionData;
+      lastCheckedEmail.current = session?.user?.email;
+      setUserSubscription(subscriptionData);
     } catch (error) {
       console.error("Error checking subscription:", error);
-      setUserSubscription({ variant_name: "free", meetings_available: 0 });
+      const fallbackData = { variant_name: "free", meetings_available: 0 };
+      subscriptionCache.current = fallbackData;
+      lastCheckedEmail.current = session?.user?.email;
+      setUserSubscription(fallbackData);
     } finally {
       setLoading(false);
     }
@@ -44,6 +63,18 @@ export default function SubscriptionCheck({ children }) {
 
   const handleCheckoutLocal = async (plan, planDetails) => {
     await handleCheckout(plan, planDetails, setCheckoutLoading);
+    // Clear cache and refresh subscription status after successful checkout
+    subscriptionCache.current = null;
+    lastCheckedEmail.current = null;
+    await checkUserSubscription();
+  };
+
+  // Function to manually refresh subscription status (can be called from parent components)
+  const refreshSubscription = async () => {
+    subscriptionCache.current = null;
+    lastCheckedEmail.current = null;
+    setLoading(true);
+    await checkUserSubscription();
   };
 
   const hasActiveSubscription = () => {
