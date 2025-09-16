@@ -1,14 +1,11 @@
 import ffmpeg from 'fluent-ffmpeg';
+import ffmpegStatic from "ffmpeg-static";
 import formidable from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-// Configure FFmpeg path for Vercel
-// Use system FFmpeg in production, ffmpeg-static in development
-const ffmpegPath = require('ffmpeg-static');
-
-ffmpeg.setFfmpegPath(ffmpegPath);
+ffmpeg.setFfmpegPath(ffmpegStatic);
 
 // Configure API to handle multipart form data
 export const config = {
