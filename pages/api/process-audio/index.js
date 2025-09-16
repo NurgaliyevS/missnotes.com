@@ -5,6 +5,9 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
+console.log("ffmpeg-static path:", ffmpegStatic);
+console.log("exists?", fs.existsSync(ffmpegStatic));
+
 ffmpeg.setFfmpegPath(ffmpegStatic);
 
 // Configure API to handle multipart form data

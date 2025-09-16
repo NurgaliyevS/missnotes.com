@@ -1,0 +1,9 @@
+{
+    "functions": {
+      "api/process-audio/index.js": {
+        "runtime": "nodejs18.x",
+        "maxDuration": 60
+      }
+    }
+  }
+  
