@@ -18,7 +18,9 @@ import {
 } from '@/lib/audioFormats';
 import { 
   needsChunking, 
-  transcribeChunkedFile 
+  transcribeChunkedFile,
+  transcribeProcessedChunks,
+  processAudioInChunks 
 } from '@/lib/fileChunking';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import SubscriptionCheck from '@/components/SubscriptionCheck';
@@ -87,7 +89,7 @@ export default function UploadPage() {
     toast.success(`${selectedFile.name} has been selected for upload.`);
   };
 
-  const handleTranscriptionWithFile = async (fileToTranscribe, processedFileUrl = null) => {
+  const handleTranscriptionWithFile = async (fileToTranscribe, processedFileUrl = null, processResult = null) => {
     if (!fileToTranscribe) return;
 
     setTranscribing(true);
@@ -142,73 +144,38 @@ export default function UploadPage() {
                     type: processedFile.type
                   });
 
-                  // Check if processed file is small enough for single chunk
-                  const MAX_CHUNK_SIZE = 4 * 1024 * 1024; // 4MB
-                  
-                  if (processedFile.size <= MAX_CHUNK_SIZE) {
-                    // Use chunked transcription API directly for small processed files
-                    setTranscriptionStep('processing');
-                    setTranscriptionMessage('Transcribing processed audio...');
-
-                    // Create FormData for chunked transcription
-                    const formData = new FormData();
-                    formData.append('file', processedFile);
-                    formData.append('chunkIndex', '0');
-                    formData.append('totalChunks', '1');
-                    formData.append('sessionId', `processed-${Date.now()}`);
-                    formData.append('originalFilename', processedFile.name);
-
-                    // Simulate progress
-                    const progressInterval = setInterval(() => {
-                      setTranscriptionProgress(prev => {
-                        if (prev >= 85) {
-                          clearInterval(progressInterval);
-                          return 85;
-                        }
-                        return prev + 5;
-                      });
-                    }, 500);
-
-                    // Call chunked transcription API (single chunk)
-                    const response = await fetch('/api/transcribe-chunked', {
-                      method: 'POST',
-                      body: formData,
+                  // For processed files, check if we have multiple processed chunks
+                  if (processResult && processResult.processedChunkUrls && processResult.processedChunkUrls.length > 1) {
+                    // Multiple processed chunks - transcribe each one individually
+                    console.log('Using multi-chunk transcription for processed file:', {
+                      chunkCount: processResult.processedChunkUrls.length,
+                      originalFilename: fileToTranscribe.name
                     });
+                    setTranscriptionStep('chunking');
+                    setTranscriptionMessage(`Transcribing ${processResult.processedChunkUrls.length} processed chunks...`);
 
-                    clearInterval(progressInterval);
+                    const result = await transcribeProcessedChunks(
+                      processResult.processedChunkUrls, 
+                      fileToTranscribe.name, 
+                      (progress) => {
+                        setTranscriptionProgress(progress.progress);
+                        setTranscriptionStep(progress.step);
+                        setTranscriptionMessage(progress.message);
+                      }
+                    );
 
-                    if (!response.ok) {
-                      const errorData = await response.json();
-                      throw new Error(errorData.error || 'Chunked transcription failed');
-                    }
-
-                    const result = await response.json();
-                    
-                    // Format result to match standard transcription format
-                    const formattedResult = {
-                      success: true,
-                      transcription: result.transcription,
-                      segments: result.segments,
-                      language: result.language,
-                      duration: result.duration,
-                    };
-
-                    setTranscriptionResult(formattedResult);
-                    setTranscriptionProgress(100);
-                    setTranscriptionStep('complete');
-                    setTranscriptionMessage('Transcription completed');
-
-                    toast.success(`Successfully transcribed processed file ${processedFile.name}`);
+                    setTranscriptionResult(result);
+                    toast.success(`Successfully transcribed processed file ${processedFile.name} (${processResult.processedChunkUrls.length} chunks)`);
                     
                     // Auto-generate summary - pass the result directly to avoid timing issues
                     setTimeout(() => {
-                      handleAutoGenerateSummary(fileToTranscribe.name, formattedResult);
+                      handleAutoGenerateSummary(fileToTranscribe.name, result);
                     }, 1000);
                   } else {
-                    // Processed file is still too large, use original chunked approach
-                    console.log('Processed file still too large, using original chunked transcription');
+                    // Single processed chunk - use regular chunked transcription
+                    console.log('Using single-chunk transcription for processed file');
                     setTranscriptionStep('chunking');
-                    setTranscriptionMessage('Processing large processed file...');
+                    setTranscriptionMessage('Processing processed audio file...');
 
                     const result = await transcribeChunkedFile(processedFile, (progress) => {
                       setTranscriptionProgress(progress.progress);
@@ -217,7 +184,7 @@ export default function UploadPage() {
                     });
 
                     setTranscriptionResult(result);
-                    toast.success(`Successfully transcribed large processed file ${processedFile.name} using chunked processing`);
+                    toast.success(`Successfully transcribed processed file ${processedFile.name}`);
                     
                     // Auto-generate summary - pass the result directly to avoid timing issues
                     setTimeout(() => {
@@ -564,7 +531,7 @@ export default function UploadPage() {
     }
   };
 
-  // Optimized upload handler with FFmpeg processing + Cloudflare upload
+  // Optimized upload handler with chunked FFmpeg processing + Cloudflare upload
 const handleFileUpload = async () => {
   if (!selectedFile) return;
 
@@ -572,23 +539,16 @@ const handleFileUpload = async () => {
   setUploadResult(null);
 
   try {
-    // Step 1: Process audio with FFmpeg (speed up 1.5x)
+    // Step 1: Process audio with chunked FFmpeg processing (handles large files)
     toast.success("Processing audio file for faster transcription...");
     
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-
-    const processRes = await fetch("/api/process-audio", {
-      method: "POST",
-      body: formData,
+    const processResult = await processAudioInChunks(selectedFile, (progress) => {
+      // Update UI with processing progress
+      setTranscriptionProgress(progress.progress);
+      setTranscriptionStep(progress.step);
+      setTranscriptionMessage(progress.message);
     });
 
-    if (!processRes.ok) {
-      const errorData = await processRes.json();
-      throw new Error(errorData.error || 'Audio processing failed');
-    }
-
-    const processResult = await processRes.json();
     console.log('Audio processing result:', processResult);
 
     // Step 2: Start transcription with processed file URL
@@ -597,18 +557,19 @@ const handleFileUpload = async () => {
     // Step 3: Success – show user processing results and start transcription
     setUploadResult({
       success: true,
-      message: `Audio processed successfully! Size reduced by ${processResult.compressionRatio}`,
+      message: `Audio processed successfully! Size reduced by ${processResult.compressionRatio}${processResult.chunkedProcessing ? ' (chunked processing)' : ''}`,
       originalSize: processResult.originalSize,
       processedSize: processResult.processedSize,
       compressionRatio: processResult.compressionRatio,
-      url: processResult.processedFileUrl
+      url: processResult.processedFileUrl,
+      chunkedProcessing: processResult.chunkedProcessing
     });
     
     toast.success(`Audio processed! Size reduced by ${processResult.compressionRatio}. Starting transcription...`);
      
     // Set the original file and start transcription with processed file URL
     setFile(selectedFile);
-    handleTranscriptionWithFile(selectedFile, processResult.processedFileUrl);
+    handleTranscriptionWithFile(selectedFile, processResult.processedFileUrl, processResult);
     
   } catch (error) {
     console.error('Upload error:', error);
@@ -630,6 +591,14 @@ const handleFileUpload = async () => {
   } finally {
     setUploading(false);
   }
+};
+
+const removeFile = () => {
+  setSelectedFile(null);
+  setUploadResult(null);
+  setTranscriptionResult(null);
+  setSummaryResult(null);
+  setMeetingTitle('');
 };
 
 
@@ -749,7 +718,7 @@ const handleFileUpload = async () => {
                     {selectedFile && !uploading && (
                       <Button 
                         variant="outline" 
-                        onClick={() => setSelectedFile(null)}
+                        onClick={removeFile}
                         className="px-3"
                       >
                         Remove
@@ -769,6 +738,15 @@ const handleFileUpload = async () => {
                       {uploadResult.message && (
                         <p className="text-xs mt-1">{uploadResult.message}</p>
                       )}
+                      {uploadResult.chunkedProcessing && (
+                        <div className="text-xs mt-1 text-green-600">
+                          {uploadResult.failedChunks > 0 && (
+                            <p className="text-orange-600 mt-1">
+                              ⚠️ {uploadResult.failedChunks} chunks failed, but processing continued with {uploadResult.chunksProcessed} successful chunks
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -781,7 +759,8 @@ const handleFileUpload = async () => {
                             {transcriptionStep === 'uploading' ? 'Processing Audio' : 
                              transcriptionStep === 'chunking' ? 'Preparing File' :
                              transcriptionStep === 'merging' ? 'Finalizing Transcription' :
-                             transcriptionStep === 'processing' ? 'Transcribing Audio' :
+                             transcriptionStep === 'processing' ? (uploading ? 'Optimizing Audio' : 'Transcribing Audio') :
+                             transcriptionStep === 'reassembling' ? 'Reassembling Audio' :
                              'Processing...'}
                           </p>
                           <p className="text-xs text-slate-600">

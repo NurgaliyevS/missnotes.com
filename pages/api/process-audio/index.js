@@ -61,8 +61,10 @@ export default async function handler(req, res) {
             size: uploadedFile.size
         });
 
-        // Generate output path for processed file (MP3 format)
-        const outputFilename = `processed-${Date.now()}-${originalFilename.replace(/\.[^/.]+$/, '.mp3')}`;
+        // Generate unique output path for processed file (MP3 format)
+        // Add random component to prevent conflicts when processing chunks in parallel
+        const randomId = Math.random().toString(36).substr(2, 9);
+        const outputFilename = `processed-${Date.now()}-${randomId}-${originalFilename.replace(/\.[^/.]+$/, '.mp3')}`;
         const outputPath = path.join('/tmp', outputFilename);
         tempFiles.push(outputPath);
 
