@@ -774,15 +774,25 @@ const handleFileUpload = async () => {
 
                   {transcribing && (
                     <div className="w-full max-w-md mx-auto">
+                      <div className="flex items-center justify-center mb-4">
+                        <Loader2 className="h-6 w-6 animate-spin text-blue-600 mr-3" />
+                        <div className="text-left">
+                          <p className="text-sm font-medium text-slate-900">
+                            {transcriptionStep === 'uploading' ? 'Processing Audio' : 
+                             transcriptionStep === 'chunking' ? 'Preparing File' :
+                             transcriptionStep === 'merging' ? 'Finalizing Transcription' :
+                             transcriptionStep === 'processing' ? 'Transcribing Audio' :
+                             'Processing...'}
+                          </p>
+                          <p className="text-xs text-slate-600">
+                            {transcriptionMessage || 'Please wait while we process your audio...'}
+                          </p>
+                        </div>
+                      </div>
                       <Progress value={transcriptionProgress} className="mb-2" />
-                      <p className="text-sm text-slate-600">
-                        {transcriptionMessage || 'Transcribing...'} {Math.round(transcriptionProgress)}%
+                      <p className="text-sm text-slate-600 text-center">
+                        {Math.round(transcriptionProgress)}% Complete
                       </p>
-                      {transcriptionStep && (
-                        <p className="text-xs text-slate-500 mt-1 capitalize">
-                          Step: {transcriptionStep.replace(/([A-Z])/g, ' $1').trim()}
-                        </p>
-                      )}
                     </div>
                   )}
                 </div>

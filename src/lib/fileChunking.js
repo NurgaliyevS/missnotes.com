@@ -181,37 +181,90 @@ export async function uploadChunk(chunkData, onProgress = null) {
 }
 
 /**
- * Upload all chunks sequentially and return results
+ * Upload all chunks in parallel and return results
  * @param {Array} chunks - Array of chunk data objects
  * @param {Function} onProgress - Optional progress callback
  * @returns {Promise<Array>} Array of transcription results
  */
 export async function uploadAllChunks(chunks, onProgress = null) {
-  const results = [];
-  
-  console.log('Starting sequential chunk upload:', {
+  console.log('Starting parallel chunk upload:', {
     totalChunks: chunks.length,
     sessionId: chunks[0]?.sessionId
   });
 
-  for (let i = 0; i < chunks.length; i++) {
-    const chunk = chunks[i];
-    
-    try {
-      const result = await uploadChunk(chunk, onProgress);
-      results.push(result);
-    } catch (error) {
-      console.error(`Failed to upload chunk ${i}:`, error);
-      throw new Error(`Chunk ${i} upload failed: ${error.message}`);
-    }
+  // Track completed chunks for progress
+  let completedChunks = 0;
+  const chunkResults = new Array(chunks.length);
+  
+  // Start progress simulation for smoother UX
+  let progressInterval = null;
+  if (onProgress) {
+    let simulatedProgress = 0;
+    progressInterval = setInterval(() => {
+      simulatedProgress = Math.min(simulatedProgress + 2, 85); // Gradually increase to 85%
+      const baseProgress = 10 + (simulatedProgress * 0.8); // 10-90% range
+      onProgress({
+        step: 'uploading',
+        progress: baseProgress,
+        message: `Processing ${chunks.length} in parallel... (${completedChunks}/${chunks.length} completed)`
+      });
+    }, 1000); // Update every second
   }
 
-  console.log('All chunks uploaded successfully:', {
-    totalChunks: results.length,
-    sessionId: results[0]?.sessionId
+  // Create array of promises for parallel processing
+  const uploadPromises = chunks.map((chunk, index) => {
+    return uploadChunk(chunk, (chunkProgress) => {
+      // Store result in correct position
+      chunkResults[index] = chunkProgress.result;
+      completedChunks++;
+      
+      if (onProgress) {
+        // Clear the simulation interval when we have real progress
+        if (progressInterval) {
+          clearInterval(progressInterval);
+          progressInterval = null;
+        }
+        
+        // Calculate progress based on completed chunks
+        const progress = (completedChunks / chunks.length) * 100;
+        const baseProgress = 10 + (progress * 0.8); // 10-90% range
+        onProgress({
+          chunkIndex: chunkProgress.chunkIndex,
+          totalChunks: chunkProgress.totalChunks,
+          progress: baseProgress,
+          message: `Processing audio in parallel (${completedChunks}/${chunks.length} completed)`,
+          result: chunkProgress.result
+        });
+      }
+    }).catch(error => {
+      console.error(`Failed to upload chunk ${index}:`, error);
+      throw new Error(`Chunk ${index} upload failed: ${error.message}`);
+    });
   });
 
-  return results;
+  try {
+    // Wait for all chunks to complete in parallel
+    const results = await Promise.all(uploadPromises);
+    
+    // Clear progress interval if still running
+    if (progressInterval) {
+      clearInterval(progressInterval);
+    }
+    
+    console.log('All chunks uploaded successfully:', {
+      totalChunks: results.length,
+      sessionId: results[0]?.sessionId
+    });
+
+    return results;
+  } catch (error) {
+    // Clear progress interval on error
+    if (progressInterval) {
+      clearInterval(progressInterval);
+    }
+    console.error('Parallel chunk upload failed:', error);
+    throw error;
+  }
 }
 
 /**
@@ -283,14 +336,14 @@ export async function transcribeChunkedFile(file, onProgress = null) {
       onProgress({ step: 'chunking', progress: 10, message: `Split file into ${chunks.length} chunks` });
     }
 
-    // Step 2: Upload all chunks
+    // Step 2: Upload all chunks in parallel
     const chunkResults = await uploadAllChunks(chunks, (chunkProgress) => {
       if (onProgress) {
-        const uploadProgress = 10 + (chunkProgress.progress * 0.8); // 10-90%
+        // Progress is already calculated in uploadAllChunks (10-90% range)
         onProgress({ 
           step: 'uploading', 
-          progress: uploadProgress, 
-          message: `Uploading chunk ${chunkProgress.chunkIndex + 1}/${chunkProgress.totalChunks}` 
+          progress: chunkProgress.progress, 
+          message: chunkProgress.message
         });
       }
     });
