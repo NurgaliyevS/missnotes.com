@@ -928,10 +928,9 @@ const removeFile = () => {
                 <Button 
                   onClick={() => {
                     setSummaryResult(null);
-                    setMeetingTitle('');
                     setMeetingDate('');
                     setShareableLink('');
-                  }} 
+                    handleAutoGenerateSummary(file?.name || 'Meeting Recording', transcriptionResult)}} 
                   variant="outline"
                 >
                   Generate New Summary
@@ -943,7 +942,7 @@ const removeFile = () => {
                 <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                   <h3 className="font-medium text-green-800 mb-2 flex items-center gap-2">
                     <Share2 className="h-4 w-4" />
-                    Shareable Link Generated
+                    Shareable Link Created
                   </h3>
                   <p className="text-sm text-green-700 mb-3">
                     Anyone with this link can view your meeting summary:
