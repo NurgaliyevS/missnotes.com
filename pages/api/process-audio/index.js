@@ -1,14 +1,16 @@
 import ffmpeg from 'fluent-ffmpeg';
-import ffmpegStatic from "ffmpeg-static";
+import ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import formidable from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 
-console.log("ffmpeg-static path:", ffmpegStatic);
-console.log("exists?", fs.existsSync(ffmpegStatic));
+// Configure FFmpeg path using @ffmpeg-installer/ffmpeg
+// This package automatically downloads and provides FFmpeg for the current platform
+console.log("FFmpeg path:", ffmpegInstaller.path);
+console.log("FFmpeg exists:", fs.existsSync(ffmpegInstaller.path));
 
-ffmpeg.setFfmpegPath(ffmpegStatic);
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 // Configure API to handle multipart form data
 export const config = {
