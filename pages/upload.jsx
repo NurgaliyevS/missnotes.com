@@ -214,7 +214,7 @@ export default function UploadPage() {
         });
 
         setTranscriptionResult(result);
-        toast.success(`Successfully transcribed large file ${fileToTranscribe.name} using chunked processing`);
+        toast.success(`Successfully transcribed large file ${fileToTranscribe.name}`);
         
         // Auto-generate summary - pass the result directly to avoid timing issues
         setTimeout(() => {
@@ -557,7 +557,7 @@ const handleFileUpload = async () => {
     // Step 3: Success – show user processing results and start transcription
     setUploadResult({
       success: true,
-      message: `Audio processed successfully! Size reduced by ${processResult.compressionRatio}${processResult.chunkedProcessing ? ' (chunked processing)' : ''}`,
+      message: `Audio processed successfully! Size reduced by ${processResult.compressionRatio}${processResult.chunkedProcessing ? ' ' : ''}`,
       originalSize: processResult.originalSize,
       processedSize: processResult.processedSize,
       compressionRatio: processResult.compressionRatio,
