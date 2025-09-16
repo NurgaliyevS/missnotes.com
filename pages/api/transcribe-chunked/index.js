@@ -82,13 +82,19 @@ export default async function handler(req, res) {
 			});
 		}
 
+		// Check if this is a processed file
+		const isProcessedFile = audioFile.originalFilename?.includes('processed') || 
+		                        audioFile.mimetype === 'audio/mpeg' ||
+		                        audioFile.originalFilename?.endsWith('.mp3');
+
 		console.log('Processing chunk:', {
 			filename: audioFile.originalFilename,
 			mimetype: audioFile.mimetype,
 			size: audioFile.size,
 			chunkIndex,
 			totalChunks,
-			sessionId
+			sessionId,
+			isProcessedFile: isProcessedFile
 		});
 
 		// Validate chunk size for Vercel compatibility
@@ -101,8 +107,8 @@ export default async function handler(req, res) {
 			});
 		}
 
-		// Validate file type
-		if (!isSupportedFormat(audioFile.mimetype, audioFile.originalFilename)) {
+		// Validate file type - allow MP3 for processed files
+		if (!isSupportedFormat(audioFile.mimetype, audioFile.originalFilename) && !isProcessedFile) {
 			return res.status(400).json({
 				error: `Invalid file type: ${audioFile.mimetype || 'unknown'}. File: ${audioFile.originalFilename}. Supported formats include MP3, M4A, WAV, OGG, FLAC, AAC, AIFF and many more audio formats.`,
 			});
@@ -112,7 +118,9 @@ export default async function handler(req, res) {
 		const audioBuffer = fs.readFileSync(audioFile.filepath);
 
 		// Determine a safe MIME type for OpenAI if missing
-		const fallbackMime = getMimeTypeFromExtension(audioFile.originalFilename) || 'audio/mp4';
+		// For processed files, use audio/mpeg, otherwise use original logic
+		const fallbackMime = isProcessedFile ? 'audio/mpeg' : 
+		                     (getMimeTypeFromExtension(audioFile.originalFilename) || 'audio/mpeg');
 		const mimeForUpload = audioFile.mimetype || fallbackMime;
 
 		console.log('Uploading chunk to OpenAI with MIME type:', mimeForUpload);

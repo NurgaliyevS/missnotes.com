@@ -99,7 +99,7 @@ export default function UploadPage() {
     handleTranscriptionWithFile(file);
   };
 
-  const handleTranscriptionWithFile = async (fileToTranscribe) => {
+  const handleTranscriptionWithFile = async (fileToTranscribe, processedFileUrl = null) => {
     if (!fileToTranscribe) return;
 
     setTranscribing(true);
@@ -108,15 +108,140 @@ export default function UploadPage() {
     setTranscriptionMessage('');
 
     try {
-      // Check if file needs chunking
-      if (needsChunking(fileToTranscribe)) {
+      // Debug: Log file details
+      console.log('File details for transcription:', {
+        filename: fileToTranscribe.name,
+        type: fileToTranscribe.type,
+        size: fileToTranscribe.size,
+        processedFileUrl: processedFileUrl,
+        isMP4: fileToTranscribe.type === 'audio/mp4',
+        hasProcessedUrl: !!processedFileUrl
+      });
+
+              // If we have a processed file URL, use chunked transcription
+              // Processed files can still be large (>25MB) and need chunking
+              if (processedFileUrl) {
+                console.log('Using processed file for chunked transcription:', {
+                  filename: fileToTranscribe.name,
+                  size: fileToTranscribe.size,
+                  processedFileUrl: processedFileUrl,
+                  note: 'Processed file - using chunked transcription for large files'
+                });
+
+                // Fetch processed file and use chunked transcription
+                try {
+                  console.log('Fetching processed file for chunked transcription:', processedFileUrl);
+                  
+                  // Create a server-side proxy endpoint to fetch the file
+                  const proxyResponse = await fetch('/api/fetch-file-proxy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fileUrl: processedFileUrl })
+                  });
+                  
+                  if (!proxyResponse.ok) {
+                    throw new Error(`Failed to fetch processed file: ${proxyResponse.status}`);
+                  }
+                  
+                  const processedFileBuffer = await proxyResponse.arrayBuffer();
+                  const processedFile = new File([processedFileBuffer], fileToTranscribe.name.replace(/\.[^/.]+$/, '.mp3'), {
+                    type: 'audio/mpeg'
+                  });
+                  
+                  console.log('Using processed file for transcription:', {
+                    filename: processedFile.name,
+                    size: processedFile.size,
+                    type: processedFile.type
+                  });
+
+                  // Check if processed file is small enough for single chunk
+                  const MAX_CHUNK_SIZE = 4 * 1024 * 1024; // 4MB
+                  
+                  if (processedFile.size <= MAX_CHUNK_SIZE) {
+                    // Use chunked transcription API directly for small processed files
+                    setTranscriptionStep('processing');
+                    setTranscriptionMessage('Transcribing processed audio...');
+
+                    // Create FormData for chunked transcription
+                    const formData = new FormData();
+                    formData.append('file', processedFile);
+                    formData.append('chunkIndex', '0');
+                    formData.append('totalChunks', '1');
+                    formData.append('sessionId', `processed-${Date.now()}`);
+                    formData.append('originalFilename', processedFile.name);
+
+                    // Simulate progress
+                    const progressInterval = setInterval(() => {
+                      setTranscriptionProgress(prev => {
+                        if (prev >= 85) {
+                          clearInterval(progressInterval);
+                          return 85;
+                        }
+                        return prev + 5;
+                      });
+                    }, 500);
+
+                    // Call chunked transcription API (single chunk)
+                    const response = await fetch('/api/transcribe-chunked', {
+                      method: 'POST',
+                      body: formData,
+                    });
+
+                    clearInterval(progressInterval);
+
+                    if (!response.ok) {
+                      const errorData = await response.json();
+                      throw new Error(errorData.error || 'Chunked transcription failed');
+                    }
+
+                    const result = await response.json();
+                    
+                    // Format result to match standard transcription format
+                    const formattedResult = {
+                      success: true,
+                      transcription: result.transcription,
+                      segments: result.segments,
+                      language: result.language,
+                      duration: result.duration,
+                    };
+
+                    setTranscriptionResult(formattedResult);
+                    setTranscriptionProgress(100);
+                    setTranscriptionStep('complete');
+                    setTranscriptionMessage('Transcription completed');
+
+                    toast.success(`Successfully transcribed processed file ${processedFile.name}`);
+                  } else {
+                    // Processed file is still too large, use original chunked approach
+                    console.log('Processed file still too large, using original chunked transcription');
+                    setTranscriptionStep('chunking');
+                    setTranscriptionMessage('Processing large processed file...');
+
+                    const result = await transcribeChunkedFile(processedFile, (progress) => {
+                      setTranscriptionProgress(progress.progress);
+                      setTranscriptionStep(progress.step);
+                      setTranscriptionMessage(progress.message);
+                    });
+
+                    setTranscriptionResult(result);
+                    toast.success(`Successfully transcribed large processed file ${processedFile.name} using chunked processing`);
+                  }
+                  
+                } catch (error) {
+                  console.error('Error with processed file transcription:', error);
+                  throw new Error(`Failed to transcribe processed file: ${error.message}`);
+                }
+
+      } else if (needsChunking(fileToTranscribe)) {
         console.log('Large file detected, using chunked transcription:', {
           filename: fileToTranscribe.name,
           size: fileToTranscribe.size,
-          needsChunking: true
+          needsChunking: true,
+          type: fileToTranscribe.type,
+          note: 'This should NOT happen for processed files!'
         });
 
-        // Use chunked transcription for large files
+        // Use chunked transcription for large original files
         const result = await transcribeChunkedFile(fileToTranscribe, (progress) => {
           setTranscriptionProgress(progress.progress);
           setTranscriptionStep(progress.step);
@@ -419,7 +544,7 @@ export default function UploadPage() {
     }
   };
 
-  // Direct upload handler using presigned URL
+  // Optimized upload handler with FFmpeg processing + Cloudflare upload
 const handleFileUpload = async () => {
   if (!selectedFile) return;
 
@@ -427,52 +552,61 @@ const handleFileUpload = async () => {
   setUploadResult(null);
 
   try {
-    // Step 1: Ask backend for presigned upload URL
-    const urlRes = await fetch("/api/file/upload-url", {
+    // Step 1: Process audio with FFmpeg (speed up 1.5x)
+    toast.success("Processing audio file for faster transcription...");
+    
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    const processRes = await fetch("/api/process-audio", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        filename: selectedFile.name,
-        mimetype: selectedFile.type,
-      }),
+      body: formData,
     });
 
-    const { uploadUrl, fileUrl, error } = await urlRes.json();
-    if (error) throw new Error(error);
-
-    // Step 2: Upload file directly to Cloudflare R2
-    const uploadRes = await fetch(uploadUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": selectedFile.type,
-        "Content-Length": selectedFile.size.toString(),
-      },
-      body: selectedFile, // raw file, not base64
-    });
-
-    if (!uploadRes.ok) {
-      throw new Error(`Upload failed with status ${uploadRes.status}`);
+    if (!processRes.ok) {
+      const errorData = await processRes.json();
+      throw new Error(errorData.error || 'Audio processing failed');
     }
 
-     // Step 3: Success – show user final file URL and start transcription
-     setUploadResult({
-       success: true,
-       message: "File uploaded successfully!",
-       url: fileUrl,
-     });
-     toast.success("File uploaded successfully! Starting transcription...");
-     
-     // Set the file and start transcription
-     setFile(selectedFile);
-     
-     // Start transcription immediately with the file
-     handleTranscriptionWithFile(selectedFile);
-  } catch (error) {
+    const processResult = await processRes.json();
+    console.log('Audio processing result:', processResult);
+
+    // Step 2: Start transcription with processed file URL
+    toast.success("Starting transcription with processed audio...");
+
+    // Step 3: Success – show user processing results and start transcription
     setUploadResult({
-      success: false,
-      message: error.message,
+      success: true,
+      message: `Audio processed successfully! Size reduced by ${processResult.compressionRatio}`,
+      originalSize: processResult.originalSize,
+      processedSize: processResult.processedSize,
+      compressionRatio: processResult.compressionRatio,
+      url: processResult.processedFileUrl
     });
-    toast.error("Upload failed");
+    
+    toast.success(`Audio processed! Size reduced by ${processResult.compressionRatio}. Starting transcription...`);
+     
+    // Set the original file and start transcription with processed file URL
+    setFile(selectedFile);
+    handleTranscriptionWithFile(selectedFile, processResult.processedFileUrl);
+    
+  } catch (error) {
+    console.error('Upload error:', error);
+    
+    // Check if it's a timeout error and provide helpful message
+    if (error.message.includes('timeout')) {
+      setUploadResult({
+        success: false,
+        message: 'File too large for processing. Please try a shorter recording or contact support.',
+      });
+      toast.error("File too large - processing timeout");
+    } else {
+      setUploadResult({
+        success: false,
+        message: error.message,
+      });
+      toast.error("Audio processing failed");
+    }
   } finally {
     setUploading(false);
   }
@@ -604,13 +738,6 @@ const handleFileUpload = async () => {
                       </p>
                       {uploadResult.message && (
                         <p className="text-xs mt-1">{uploadResult.message}</p>
-                      )}
-                      {uploadResult.url && (
-                        <p className="text-xs mt-1 break-all">
-                          URL: <a href={uploadResult.url} target="_blank" rel="noopener noreferrer" className="underline">
-                            {uploadResult.url}
-                          </a>
-                        </p>
                       )}
                     </div>
                   )}
