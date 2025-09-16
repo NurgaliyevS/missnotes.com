@@ -6,9 +6,7 @@ import { promisify } from 'util';
 
 // Configure FFmpeg path for Vercel
 // Use system FFmpeg in production, ffmpeg-static in development
-const ffmpegPath = process.env.NODE_ENV === 'production' 
-  ? '/usr/bin/ffmpeg'  // Vercel's system FFmpeg
-  : require('ffmpeg-static'); // Local development
+const ffmpegPath = require('ffmpeg-static');
 
 ffmpeg.setFfmpegPath(ffmpegPath);
 
