@@ -87,18 +87,6 @@ export default function UploadPage() {
     toast.success(`${selectedFile.name} has been selected for upload.`);
   };
 
-  const handleUpload = async () => {
-    if (!file) return;
-
-    setUploadProgress(0);
-    handleTranscription();
-  };
-
-  const handleTranscription = async () => {
-    if (!file) return;
-    handleTranscriptionWithFile(file);
-  };
-
   const handleTranscriptionWithFile = async (fileToTranscribe, processedFileUrl = null) => {
     if (!fileToTranscribe) return;
 
@@ -211,6 +199,11 @@ export default function UploadPage() {
                     setTranscriptionMessage('Transcription completed');
 
                     toast.success(`Successfully transcribed processed file ${processedFile.name}`);
+                    
+                    // Auto-generate summary - pass the result directly to avoid timing issues
+                    setTimeout(() => {
+                      handleAutoGenerateSummary(fileToTranscribe.name, formattedResult);
+                    }, 1000);
                   } else {
                     // Processed file is still too large, use original chunked approach
                     console.log('Processed file still too large, using original chunked transcription');
@@ -225,6 +218,11 @@ export default function UploadPage() {
 
                     setTranscriptionResult(result);
                     toast.success(`Successfully transcribed large processed file ${processedFile.name} using chunked processing`);
+                    
+                    // Auto-generate summary - pass the result directly to avoid timing issues
+                    setTimeout(() => {
+                      handleAutoGenerateSummary(fileToTranscribe.name, result);
+                    }, 1000);
                   }
                   
                 } catch (error) {
@@ -250,6 +248,11 @@ export default function UploadPage() {
 
         setTranscriptionResult(result);
         toast.success(`Successfully transcribed large file ${fileToTranscribe.name} using chunked processing`);
+        
+        // Auto-generate summary - pass the result directly to avoid timing issues
+        setTimeout(() => {
+          handleAutoGenerateSummary(fileToTranscribe.name, result);
+        }, 1000);
 
       } else {
         console.log('Small file, using standard transcription:', {
@@ -297,6 +300,11 @@ export default function UploadPage() {
         setTranscriptionMessage('Transcription completed');
 
         toast.success(`Successfully transcribed ${fileToTranscribe.name}`);
+        
+        // Auto-generate summary - pass the result directly to avoid timing issues
+        setTimeout(() => {
+          handleAutoGenerateSummary(fileToTranscribe.name, result);
+        }, 1000);
       }
 
     } catch (error) {
@@ -309,56 +317,68 @@ export default function UploadPage() {
     }
   };
 
-  const handleGenerateSummary = async () => {
-    if (!transcriptionResult || !meetingTitle.trim()) {
-      toast.error("Please provide a meeting title and ensure transcription is complete.");
+  const handleAutoGenerateSummary = async (filename, transcriptionData = null) => {
+    // Use passed transcription data or fall back to state
+    const resultToUse = transcriptionData || transcriptionResult;
+    
+    console.log('handleAutoGenerateSummary called with:', {
+      transcriptionResult: resultToUse,
+      filename: filename,
+      hasTranscription: !!resultToUse?.transcription,
+      transcriptionLength: resultToUse?.transcription?.length,
+      duration: resultToUse?.duration,
+      usingPassedData: !!transcriptionData
+    });
+    
+    if (!resultToUse) {
+      toast.error("Transcription is required to generate summary.");
+      return;
+    }
+    
+    if (!resultToUse.transcription || resultToUse.transcription.trim().length === 0) {
+      toast.error("Transcription text is empty. Please try again.");
       return;
     }
 
     setGeneratingSummary(true);
 
     try {
-      const response = await fetch('/api/generate-summary', {
+      console.log('Making API call to /api/generate-summary-auto with:', {
+        transcriptionLength: resultToUse.transcription.length,
+        filename: filename
+      });
+      
+      const response = await fetch('/api/generate-summary-auto', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          transcription: transcriptionResult.transcription,
-          meetingTitle: meetingTitle.trim(),
-          meetingDate: meetingDate || new Date().toISOString().split('T')[0],
+          transcription: resultToUse.transcription,
+          filename: filename,
         }),
       });
+      
+      console.log('API response status:', response.status);
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Summary generation failed');
+        throw new Error(errorData.error || 'Auto summary generation failed');
       }
 
       const result = await response.json();
       setSummaryResult(result);
+      setMeetingTitle(result.meetingTitle);
+      setMeetingDate(result.meetingDate);
 
-      toast.success("Summary generated!");
+      toast.success("Summary generated automatically!");
 
     } catch (error) {
-      console.error('Summary generation error:', error);
+      console.error('Auto summary generation error:', error);
       toast.error(error.message || "An error occurred while generating the summary.");
     } finally {
       setGeneratingSummary(false);
     }
-  };
-
-  const removeFile = () => {
-    setFile(null);
-    setTranscriptionResult(null);
-    setSummaryResult(null);
-    setUploadProgress(0);
-    setTranscriptionProgress(0);
-    setTranscriptionStep('');
-    setTranscriptionMessage('');
-    setMeetingTitle('');
-    setMeetingDate('');
-    setShareableLink('');
   };
 
   const getFileIcon = (fileType) => {
@@ -701,13 +721,23 @@ const handleFileUpload = async () => {
                   <div className="flex gap-2">
                     <Button 
                       onClick={handleFileUpload} 
-                      disabled={!selectedFile || uploading}
+                      disabled={!selectedFile || uploading || generatingSummary || transcribing}
                       className="flex-1 bg-blue-600 hover:bg-blue-700"
                     >
                       {uploading ? (
                         <>
                           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                           Uploading...
+                        </>
+                      ) : transcribing ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Transcribing...
+                        </>
+                      ) : generatingSummary ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Generating Summary...
                         </>
                       ) : (
                         <>
@@ -753,11 +783,6 @@ const handleFileUpload = async () => {
                           Step: {transcriptionStep.replace(/([A-Z])/g, ' $1').trim()}
                         </p>
                       )}
-                      {needsChunking(file) && (
-                        <p className="text-xs text-blue-600 mt-1">
-                          📦 Large file - using chunked processing
-                        </p>
-                      )}
                     </div>
                   )}
                 </div>
@@ -766,60 +791,55 @@ const handleFileUpload = async () => {
           </Card>
 
 
-        {/* Meeting Details Form */}
+        {/* Auto-Generation Progress */}
         {transcriptionResult && !summaryResult && (
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
-                Meeting Details
+                <Sparkles className="h-5 w-5 text-purple-600" />
+                Generating Meeting Summary
               </CardTitle>
               <CardDescription>
-                Provide meeting information to generate summaries and action items
+                Automatically generating insights from your meeting transcript
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
-                <div>
-                  <Label htmlFor="meeting-title">Meeting Title *</Label>
-                  <Input
-                    id="meeting-title"
-                    placeholder="e.g., Weekly Team Standup"
-                    value={meetingTitle}
-                    onChange={(e) => setMeetingTitle(e.target.value)}
-                    className="mt-2"
-                  />
+              <div className="text-center py-8">
+                <div className="flex items-center justify-center mb-4">
+                  <Loader2 className="h-8 w-8 animate-spin text-purple-600 mr-3" />
+                  <div className="text-left">
+                    <p className="text-lg font-medium text-slate-900">
+                      {generatingSummary ? 'Generating Summary & Action Items...' : 'Preparing Summary Generation...'}
+                    </p>
+                    <p className="text-sm text-slate-600">
+                      Meeting: {meetingTitle || 'Auto-generating title...'}
+                    </p>
+                    <p className="text-xs text-slate-500">
+                      Date: {meetingDate || new Date().toISOString().split('T')[0]}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="meeting-date">Meeting Date</Label>
-                  <Input
-                    id="meeting-date"
-                    type="date"
-                    value={meetingDate}
-                    onChange={(e) => setMeetingDate(e.target.value)}
-                    className="mt-2"
-                  />
-                </div>
-              </div>
-              
-              <div className="flex justify-center">
-                <Button 
-                  onClick={handleGenerateSummary} 
-                  disabled={!meetingTitle.trim() || generatingSummary}
-                  className="bg-purple-600 hover:bg-purple-700"
-                >
-                  {generatingSummary ? (
-                    <>
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Generating Summary & Action Items...
-                    </>
-                  ) : (
-                    <>
+                
+                {generatingSummary && (
+                  <div className="w-full max-w-md mx-auto">
+                    <Progress value={50} className="mb-2" />
+                    <p className="text-sm text-slate-600">
+                      Analyzing transcript and extracting key insights...
+                    </p>
+                  </div>
+                )}
+                
+                {!generatingSummary && (
+                  <div className="mt-4">
+                    <Button 
+                      onClick={() => handleAutoGenerateSummary(file?.name || 'Meeting Recording', transcriptionResult)}
+                      className="bg-purple-600 hover:bg-purple-700"
+                    >
                       <Sparkles className="h-4 w-4 mr-2" />
-                      Generate Summary & Action Items
-                    </>
-                  )}
-                </Button>
+                      Generate Summary Now
+                    </Button>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

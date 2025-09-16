@@ -134,8 +134,7 @@ export default async function handler(req, res) {
 		const transcription = await openai.audio.transcriptions.create({
 			file: fileForOpenAI,
 			model: 'whisper-1',
-			response_format: 'json', // Simplified format for faster processing
-			// Remove word-level timestamps for faster processing and lower cost
+			response_format: 'verbose_json', // Need verbose_json to get duration
 			// Add minimal prompt for better context
 			prompt: chunkIndex === 0 ? "Meeting recording" : "Meeting continuation",
 			// Optimize for speed

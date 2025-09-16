@@ -4,17 +4,42 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Smart filename-based title generation
+const generateMeetingTitle = (filename) => {
+  // Remove file extension
+  const nameWithoutExt = filename.replace(/\.[^/.]+$/, '');
+  
+  // Common patterns to clean up
+  const cleanedName = nameWithoutExt
+    .replace(/[-_]/g, ' ')           // Replace dashes/underscores with spaces
+    .replace(/([a-z])([A-Z])/g, '$1 $2') // Add space before capital letters
+    .replace(/\s+/g, ' ')            // Replace multiple spaces with single space
+    .trim();
+  
+  // Capitalize first letter of each word
+  const titleCase = cleanedName
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+  
+  return titleCase || 'Meeting Recording';
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { transcription, meetingTitle, meetingDate } = req.body;
+    const { transcription, filename } = req.body;
 
     if (!transcription) {
       return res.status(400).json({ error: 'Transcription text is required' });
     }
+
+    // Auto-generate meeting title from filename
+    const meetingTitle = filename ? generateMeetingTitle(filename) : 'Meeting Recording';
+    const meetingDate = new Date().toISOString().split('T')[0];
 
     // Create the prompt for GPT-4o-mini with cleaner formatting
     const prompt = `Based on the following meeting transcript, please provide a comprehensive analysis in the following format:
@@ -35,8 +60,8 @@ ACTION ITEMS:
   * Priority level (High/Medium/Low)
 
 Meeting Context:
-- Title: ${meetingTitle || 'Meeting'}
-- Date: ${meetingDate || 'Not specified'}
+- Title: ${meetingTitle}
+- Date: ${meetingDate}
 
 Transcript:
 ${transcription}
@@ -108,12 +133,14 @@ Please format the response clearly with proper sections and bullet points. Do NO
       success: true,
       summary: cleanSummary,
       sections: sections,
+      meetingTitle: meetingTitle,
+      meetingDate: meetingDate,
       model: 'gpt-4o-mini',
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('Summary generation error:', error);
+    console.error('Auto summary generation error:', error);
     res.status(500).json({ 
       error: 'Failed to generate summary', 
       details: error.message 
