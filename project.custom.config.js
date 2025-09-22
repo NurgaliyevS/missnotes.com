@@ -20,12 +20,12 @@ export const customConfig = {
       title:
         "MissNotes - Turn Meeting Recordings into Actionable Notes in Minutes",
       url: "https://missnotes.com",
-      image: "https://missnotes.com/og-image.jpg",
+      image: "https://missnotes.com/og-image.png",
       imageAlt:
         "MissNotes - Upload meeting recordings and get transcripts, summaries, and action items in minutes",
       content: "https://x.com/tech_nurgaliyev",
       twitterSite: "@tech_nurgaliyev",
-      twitterImage: "https://missnotes.com/og-image.jpg",
+      twitterImage: "https://missnotes.com/og-image.png",
     },
   },
   blog: {
