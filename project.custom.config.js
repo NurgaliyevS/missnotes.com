@@ -1,42 +1,42 @@
 
 export const customConfig = {
-  domainName: "redditagency.com",
+  domainName: "missnotes.com",
   mailgun: {
     subdomain: "mg",
-    fromNoReply: `Reddit Agency <noreply@mg.redditagency.com>`,
-    fromAdmin: `Reddit Agency <admin@mg.redditagency.com>`,
+    fromNoReply: `MissNotes <noreply@mg.missnotes.com>`,
+    fromAdmin: `MissNotes <admin@mg.missnotes.com>`,
     supportEmail: "nurgasab@gmail.com",
     forwardRepliesTo: "nurgasab@gmail.com",
   },
   documentTitle:
-    "Reddit Marketing Agency for Organic and Paid Growth",
-  domainWithHttps: "https://redditagency.com",
+    "MissNotes - Turn Meeting Recordings into Actionable Notes in Minutes",
+  domainWithHttps: "https://missnotes.com",
   seo: {
     description:
-      "Reddit Marketing Agency for Organic and Paid Growth. Get more customers and users through Reddit",
+      "Upload meeting recordings and get transcripts, summaries, and action items in minutes. Perfect for ADHDers and busy professionals. No setup, no distractions.",
     themeColor: "#F3F4EF",
-    applicationName: "redditagency",
+    applicationName: "missnotes",
     og: {
       title:
-        "Reddit Marketing Agency for Organic and Paid Growth",
-      url: "https://redditagency.com",
-      image: "https://redditagency.com/company_related/og-image.jpg",
+        "MissNotes - Turn Meeting Recordings into Actionable Notes in Minutes",
+      url: "https://missnotes.com",
+      image: "https://missnotes.com/og-image.jpg",
       imageAlt:
-        "Reddit Marketing Agency for Organic and Paid Growth. Get more customers and users through Reddit",
+        "MissNotes - Upload meeting recordings and get transcripts, summaries, and action items in minutes",
       content: "https://x.com/tech_nurgaliyev",
       twitterSite: "@tech_nurgaliyev",
-      twitterImage: "https://redditagency.com/company_related/og-image.jpg",
+      twitterImage: "https://missnotes.com/og-image.jpg",
     },
   },
   blog: {
-    title: "Reddit Agency Blog",
+    title: "MissNotes Blog",
     description:
-      "Reddit Marketing Agency for Organic and Paid Growth. Get more customers and users through Reddit",
-    canonical: "https://redditagency.com/blog",
+      "Tips, tricks, and insights for better meeting management and productivity. From ADHDers, for ADHDers.",
+    canonical: "https://missnotes.com/blog",
     author: {
       name: "Sabyr Nurgaliyev",
       description:
-        "I am a founder and Reddit marketing expert. I created Reddit Agency to help businesses and entrepreneurs grow their presence on Reddit and drive meaningful traffic and customers to their websites.",
+        "I am the founder of MissNotes, a meeting transcription and note-taking tool designed specifically for ADHDers and busy professionals. I created MissNotes to help people turn meeting recordings into actionable notes without the overwhelm.",
     },
   },
 };
