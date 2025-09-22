@@ -1,12 +1,12 @@
-import BookCallButton from "@/components/BookCallButton";
+import CallToActionButton from "@/components/CallToActionButton";
 
 export default function AboutSection() {
 
   return (
-    <section className="py-16 px-4 mx-auto max-w-5xl">
+    <section className="pt-8 pb-4 lg:py-16 px-4 mx-auto max-w-5xl">
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Left Column - Image */}
-        <div className="flex justify-center lg:justify-start w-full lg:w-[50%] h-[515px] order-2 lg:order-1">
+        <div className="flex justify-center lg:justify-start w-full lg:w-[50%] lg:h-[515px] order-2 lg:order-1">
           <img 
             src="/missnotes-screenshot.png" 
             alt="Professional photo" 
@@ -52,7 +52,9 @@ export default function AboutSection() {
             </li>
           </ul>
 
-          <BookCallButton className="text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors shadow-lg flex items-center justify-center max-w-fit" />
+          <div className="my-6">
+          <CallToActionButton />
+          </div>
         </div>
       </div>
     </section>

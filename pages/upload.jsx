@@ -25,6 +25,8 @@ import {
 import ProtectedRoute from '@/components/ProtectedRoute';
 import SubscriptionCheck from '@/components/SubscriptionCheck';
 import { useSession } from 'next-auth/react';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 
 export default function UploadPage() {
   const { data: session } = useSession();
@@ -603,6 +605,8 @@ const removeFile = () => {
 
 
   return (
+    <>
+    <Navbar />
     <ProtectedRoute>
       <SubscriptionCheck>
         <div className="min-h-screen bg-[#F3F4EF]  py-12 px-4">
@@ -1126,5 +1130,7 @@ const removeFile = () => {
     </div>
       </SubscriptionCheck>
     </ProtectedRoute>
+    <Footer />
+    </>
   );
 }

@@ -3,6 +3,7 @@ import { Check, Star, Zap } from "lucide-react";
 import { isDevelopment } from "@/utils/isDevelopment";
 import { useState } from "react";
 import { handleCheckout } from "@/lib/checkout";
+import { ArrowRight } from "lucide-react";
 
 export default function PricingSection() {
   const [loading, setLoading] = useState(null);
@@ -66,7 +67,7 @@ export default function PricingSection() {
             return (
               <div
                 key={index}
-                className={"w-full md:max-w-xs relative bg-card p-6 md:p-8 rounded-2xl shadow-soft border animate-fade-up hover:shadow-medium transition-all duration-300 ".concat(
+                className={"w-full md:max-w-md relative bg-card p-6 md:p-8 rounded-2xl shadow-soft border animate-fade-up hover:shadow-medium transition-all duration-300 ".concat(
                   plan.popular
                     ? ""
                     : plan.oneYearPass
@@ -141,11 +142,7 @@ export default function PricingSection() {
                 <Button
                   variant={plan.popular ? "hero" : plan.oneYearPass ? "default" : "outline"}
                   size="lg"
-                  className={`w-full text-sm md:text-base ${
-                    plan.oneYearPass 
-                      ? "bg-gradient-primary hover:shadow-glow hover:scale-105 transition-all duration-300 font-semibold" 
-                      : ""
-                  }`}
+                className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto shadow-soft hover:shadow-glow h-12 sm:h-14 flex items-center justify-center rounded-lg font-semibold mx-auto"
                   onClick={() => handleCheckoutLocal(plan.plan, plan)}
                   disabled={loading === plan.plan}
                 >
@@ -155,7 +152,10 @@ export default function PricingSection() {
                       <span className="text-xs md:text-sm">Processing...</span>
                     </div>
                   ) : (
-                    plan.cta
+                    <>
+                      <ArrowRight className="h-4 w-4" />
+                      {plan.cta}
+                    </>
                   )}
                 </Button>
               </div>

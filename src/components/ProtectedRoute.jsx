@@ -30,8 +30,8 @@ export default function ProtectedRoute({ children }) {
   // Show login prompt if not authenticated
   if (!session) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8">
+      <div className="bg-[#F3F4EF] flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto py-32 px-4">
           <LogIn className="h-16 w-16 text-blue-600 mx-auto mb-6" />
           <h1 className="text-2xl font-bold text-slate-900 mb-4">
             Authentication Required

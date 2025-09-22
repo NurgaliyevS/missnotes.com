@@ -1,5 +1,5 @@
 import React from "react";
-import BookCallButton from "@/components/BookCallButton";
+import CallToActionButton from "@/components/CallToActionButton";
 
 function VideoSection(props) {
   return (
@@ -74,8 +74,8 @@ function VideoSection(props) {
         </div> */}
 
 
-      <div className="text-center flex justify-center">
-        <BookCallButton />
+      <div className="text-center flex justify-center my-6">
+        <CallToActionButton />
       </div>
       </div>
     </section>

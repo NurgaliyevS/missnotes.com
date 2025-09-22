@@ -1,8 +1,8 @@
-import BookCallButton from "@/components/BookCallButton";
+import CallToActionButton from "@/components/CallToActionButton";
 
 export default function FeaturesSection() {
   return (
-    <section className="py-16 px-4 mx-auto max-w-5xl">
+    <section className="pt-8 pb-4 lg:py-16 px-4 mx-auto max-w-5xl">
       <div className="flex flex-col lg:flex-row gap-12 items-start">
         {/* Left Column - Content */}
         <div className="space-y-6 w-full lg:w-[50%]">
@@ -49,7 +49,9 @@ export default function FeaturesSection() {
             </ul>
           </div>
 
-          <BookCallButton />
+          <div className="my-6 ">
+          <CallToActionButton />
+          </div>
         </div>
 
         <div className="flex justify-center w-full lg:w-[50%]">

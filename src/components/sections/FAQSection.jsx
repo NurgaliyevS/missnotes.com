@@ -1,4 +1,4 @@
-import BookCallButton from "@/components/BookCallButton";
+import CallToActionButton from "@/components/CallToActionButton";
 
 export default function FAQSection() {
 
@@ -40,8 +40,8 @@ export default function FAQSection() {
         ))}
       </div>
 
-      <div className="text-center flex justify-center">
-        <BookCallButton />
+      <div className="text-center flex justify-center my-6">
+        <CallToActionButton />
       </div>
     </section>
   );

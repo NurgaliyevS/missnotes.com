@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { handleCheckout, defaultProPlan } from "@/lib/checkout";
 import Link from "next/link";
-import { Upload, Rocket } from "lucide-react";
+import { Upload, Rocket, ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
   return (
@@ -25,21 +24,21 @@ export default function HeroSection() {
               summaries + action items. No setup, no distractions.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
+            <Link href="/upload" className="w-full sm:w-auto">
               <Button
                 variant="hero"
                 className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto shadow-soft hover:shadow-glow h-12 sm:h-14 flex items-center justify-center rounded-lg font-semibold"
-                onClick={() =>
-                  handleCheckout(defaultProPlan.plan, defaultProPlan)
-                }
               >
+                <ArrowRight className="h-4 w-4" />
                 Start 7 Day Free Trial
               </Button>
+              </Link>
               <Link href="/upload" className="w-full sm:w-auto">
                 <Button
                   variant="outline"
                   className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full border-2 hover:bg-slate-50 transition-colors h-12 sm:h-14 flex items-center justify-center rounded-lg font-medium"
                 >
-                  <Upload className="h-4 w-4 mr-2" />
+                  <Upload className="h-4 w-4" />
                   Upload Audio Recording
                 </Button>
               </Link>

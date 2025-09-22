@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Upload, Zap, Share2 } from "lucide-react";
 import { handleCheckout, defaultProPlan } from "@/lib/checkout";
+import CallToActionButton from "./CallToActionButton";
 export var DemoSection = function () {
     var steps = [
         {
@@ -25,7 +26,7 @@ export var DemoSection = function () {
             bgColor: "bg-green-500/10"
         }
     ];
-    return (<section className="py-16 relative overflow-hidden">
+    return (<section className="py-16 relative overflow-hidden" id="features">
       {/* Background decoration */}
       <div className="absolute inset-0"></div>
       <div className="absolute top-10 right-20 w-64 h-64 rounded-full blur-3xl"></div>
@@ -88,18 +89,10 @@ export var DemoSection = function () {
           </div>
         </div>
 
-        <div className="text-center mt-10">
-          <div className="relative inline-block">
-            <div className="absolute inset-0 rounded-xl blur-xl opacity-30 transform scale-110"></div>
-            <Button 
-              variant="hero" 
-              size="lg" 
-              className="relative text-lg px-8 py-4 shadow-glow hover:shadow-large transition-all duration-300"
-              onClick={() => handleCheckout(defaultProPlan.plan, defaultProPlan)}
-            >
-              Start 7 Day Free Trial
-            </Button>
-          </div>
+        <div className="text-center mt-10 items-center justify-center flex">
+            <div className="my-6">
+              <CallToActionButton />
+            </div>
         </div>
       </div>
     </section>);

@@ -1,36 +1,25 @@
 import Link from "next/link";
-import Image from "next/image";
+import { NotebookPen, Upload, Home } from "lucide-react";
 
 export default function Footer() {
   return (
-    <section className="py-4 px-4">
+    <section className="py-4 px-4 bg-[#F3F4EF] border-t border-gray-200">
       <div className="flex flex-col md:flex-row gap-8 max-w-5xl mx-auto py-6 md:py-10">
         <div className="flex flex-col gap-4 flex-1 text-center md:text-left">
           <div className="flex items-center justify-center md:justify-start gap-2">
-            <Image
-              src="/logo.svg"
-              alt="Reddit Agency Logo"
-              width={32}
-              height={32}
-              className="rounded-lg"
-            />
-            <p className="font-bold text-xl text-black">Reddit Agency</p>
+            <NotebookPen className="h-8 w-8 text-slate-900" />
+            <p className="font-bold text-xl text-slate-900">MissNotes</p>
           </div>
-          <p className="text-sm text-base-content/80 leading-relaxed">
-            Turn Reddit Traffic Into Customers
+          <p className="text-sm text-slate-600 leading-relaxed">
+            Turn meeting recordings into actionable notes in minutes. No setup,
+            no distractions.
           </p>
         </div>
 
         <div className="flex flex-col gap-3 flex-1 text-center">
           <span className="font-bold text-xs uppercase tracking-wider text-gray-500">
-            Links
+            Product
           </span>
-          <Link
-            href="/#services"
-            className="text-sm hover:text-primary transition-colors"
-          >
-            Services
-          </Link>
           <Link
             href="/#pricing"
             className="text-sm hover:text-primary transition-colors"
@@ -38,42 +27,26 @@ export default function Footer() {
             Pricing
           </Link>
           <Link
-            href="/#results"
+            href="/#features"
             className="text-sm hover:text-primary transition-colors"
           >
-            Results
+            Features
           </Link>
-          <a
-            href="https://docs.google.com/document/d/e/2PACX-1vST8ZGrXlWxZR17MRGOgfAJj2lHhRqb3__-WxOZNSezEfA-i9TgBkqAWvoYFqrtU1oC4RKaU9L6mJZM/pub"
-            className="text-sm hover:text-primary transition-colors"
-            title="Free Guide: How to Dominate on Reddit"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Free Reddit Guide
-          </a>
         </div>
 
         <div className="flex flex-col gap-3 flex-1 text-center md:text-right">
           <span className="font-bold text-xs uppercase tracking-wider text-gray-500">
-            Connect
+            Support
           </span>
           <a
-            href="https://x.com/tech_nurgaliyev"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="mailto:nurgasab@gmail.com"
             className="text-sm hover:text-primary transition-colors"
           >
-            X (Twitter)
+            Contact Support
           </a>
-          <a
-            href="https://mvpagency.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm hover:text-primary transition-colors"
-          >
-            MVP Agency
-          </a>
+          <div className="text-xs text-slate-500 mt-4 md:mt-auto">
+            © 2025 MissNotes. All rights reserved.
+          </div>
         </div>
       </div>
     </section>

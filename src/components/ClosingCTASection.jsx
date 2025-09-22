@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { handleCheckout, defaultProPlan } from "@/lib/checkout";
+import CallToActionButton from "./CallToActionButton";
 export var ClosingCTASection = function () {
     return (<section className="py-20 bg-gradient-subtle">
       <div className="container mx-auto px-4">
@@ -13,14 +14,9 @@ export var ClosingCTASection = function () {
           <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
             Join ADHDers who already save hours every week with Miss Notes.
           </p>
-          <Button 
-            variant="hero" 
-            size="lg" 
-            className="text-xl px-12 py-6 animate-glow"
-            onClick={() => handleCheckout(defaultProPlan.plan, defaultProPlan)}
-          >
-            Start 7 Day Free Trial
-          </Button>
+          <div className="my-6 items-center justify-center flex">
+            <CallToActionButton />
+          </div>
         </div>
       </div>
     </section>);

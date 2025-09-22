@@ -6,9 +6,10 @@ import FeaturesSection from "@/components/sections/FeaturesSection";
 import AboutSection from "@/components/sections/AboutSection";
 import TiredSection from "@/components/sections/TiredSection";
 import PricingSection from "@/components/PricingSection";
-import FAQSection from "@/components/sections/FAQSection";
-import VideoSection from "@/components/sections/VideoSection";
+// import VideoSection from "@/components/sections/VideoSection";
 import { DemoSection } from "@/components/DemoSection";
+import { CreatorSection } from "@/components/CreatorSection";
+import { ClosingCTASection } from "@/components/ClosingCTASection";
 
 export default function Home() {
   return (
@@ -23,9 +24,8 @@ export default function Home() {
           <TiredSection />
           <DemoSection />
           <PricingSection />
-          {/* <PricingSection /> */}
-          <FAQSection />
-          <VideoSection />
+          <CreatorSection />
+          <ClosingCTASection />
           <Footer />
         </div>
       </main>

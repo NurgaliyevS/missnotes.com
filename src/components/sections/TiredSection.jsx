@@ -1,8 +1,8 @@
-import BookCallButton from "@/components/BookCallButton";
+import CallToActionButton from "@/components/CallToActionButton";
 
 export default function TiredSection() {
   return (
-    <section className="py-16 px-4 mx-auto max-w-5xl">
+    <section className="pt-8 pb-4 lg:py-16 px-4 mx-auto max-w-5xl">
       <div className="flex flex-col lg:flex-row gap-12">
         {/* Left Column - Content */}
         <div className="space-y-6 w-full lg:w-[50%] order-1 lg:order-1">
@@ -23,7 +23,9 @@ export default function TiredSection() {
             </p>
           </div>
 
-          <BookCallButton />
+          <div className="my-6">
+          <CallToActionButton />
+          </div>
         </div>
 
         {/* Right Column - Meme Image */}
