@@ -31,7 +31,7 @@ export default function TiredSection() {
         {/* Right Column - Meme Image */}
         <div className="flex justify-center lg:justify-end w-full lg:w-[50%] order-2 lg:order-2">
           <img
-            src="/meeting-meme.png"
+            src="/meeting-meme.webp"
             alt="Meeting meme"
             className="w-[470px] h-[310px] object-contain rounded-3xl"
           />
