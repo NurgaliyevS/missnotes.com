@@ -605,7 +605,7 @@ const removeFile = () => {
   return (
     <ProtectedRoute>
       <SubscriptionCheck>
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
+        <div className="min-h-screen bg-[#F3F4EF]  py-12 px-4">
           <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
@@ -632,7 +632,7 @@ const removeFile = () => {
               <div className="max-w-md mx-auto">
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="file-input">Select Audio File</Label>
+                    {/* <Label htmlFor="file-input">Select Audio File</Label> */}
                     <div
                       className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
                         dragActive 
@@ -873,7 +873,7 @@ const removeFile = () => {
 
               <Tabs defaultValue="summary" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="summary">Meeting Summary</TabsTrigger>
+                  <TabsTrigger value="summary">Summary</TabsTrigger>
                   <TabsTrigger value="decisions">Key Decisions</TabsTrigger>
                   <TabsTrigger value="actions">Action Items</TabsTrigger>
                 </TabsList>

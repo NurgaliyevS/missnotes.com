@@ -1,5 +1,4 @@
 import { SessionProvider } from "next-auth/react";
-import { Header } from "../src/components/Header";
 import "../styles/globals.css";
 import { Toaster } from "react-hot-toast";
 import CrispChat from "@/components/CrispChat";
@@ -10,7 +9,6 @@ export default function App({
 }) {
   return (
     <SessionProvider session={session}>
-      <Header />
       <Component {...pageProps} />
       <Toaster position="top-right" />
       <script

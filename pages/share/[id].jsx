@@ -233,7 +233,7 @@ export default function SharePage() {
 
             <Tabs defaultValue="summary" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="summary">Meeting Summary</TabsTrigger>
+                <TabsTrigger value="summary">Summary</TabsTrigger>
                 <TabsTrigger value="decisions">Key Decisions</TabsTrigger>
                 <TabsTrigger value="actions">Action Items</TabsTrigger>
               </TabsList>

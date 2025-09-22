@@ -4,7 +4,7 @@ import { isDevelopment } from "@/utils/isDevelopment";
 import { useState } from "react";
 import { handleCheckout } from "@/lib/checkout";
 
-export var PricingSection = function () {
+export default function PricingSection() {
   const [loading, setLoading] = useState(null);
 
   const plans = [

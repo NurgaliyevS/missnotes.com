@@ -1,13 +1,11 @@
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import heroImage from "@/assets/hero-remote-workers.jpg";
 import { handleCheckout, defaultProPlan } from "@/lib/checkout";
 import Link from "next/link";
 import { Upload, Rocket } from "lucide-react";
 
-export var HeroSection = function () {
+export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-subtle py-12 sm:py-16 lg:py-32">
+    <section className="relative overflow-hidden bg-gradient-subtle py-12 sm:py-16">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           <div className="animate-fade-up">
@@ -42,18 +40,23 @@ export var HeroSection = function () {
                   className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full border-2 hover:bg-slate-50 transition-colors h-12 sm:h-14 flex items-center justify-center rounded-lg font-medium"
                 >
                   <Upload className="h-4 w-4 mr-2" />
-                  Upload Your Audio Meeting Recording
+                  Upload Audio Recording
                 </Button>
               </Link>
             </div>
           </div>
-          <div className="animate-fade-up delay-200 order-first lg:order-last">
-            <Image
-              src={heroImage}
+          <div className="rounded-2xl">
+            {/* Mobile image */}
+            <img
+              src="/hero-mobile.webp"
               alt="Remote workers collaborating with clear meeting notes"
-              className="w-full h-auto rounded-2xl shadow-large"
-              width={600}
-              height={400}
+              className="w-[300px] h-[300px] object-contain mx-auto rounded-3xl md:hidden"
+            />
+            {/* Desktop image */}
+            <img
+              src="/hero.webp"
+              alt="Remote workers collaborating with clear meeting notes"
+              className="hidden md:block w-[550px] h-[360px] object-contain mx-auto rounded-2xl"
             />
           </div>
         </div>
