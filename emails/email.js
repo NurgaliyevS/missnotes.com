@@ -7,6 +7,26 @@ const resendApiKey = process.env.RESEND_API_KEY;
 
 const resend = new Resend(resendApiKey);
 
+// Helper function to generate unsubscribe link
+function getUnsubscribeLink(userEmail) {
+  const baseUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://missnotes.com' 
+    : 'http://localhost:3000';
+  return `${baseUrl}/api/unsubscribe-email-sequence?email=${encodeURIComponent(userEmail)}`;
+}
+
+// Helper function to add unsubscribe footer to email HTML
+function addUnsubscribeFooter(html, userEmail) {
+  const unsubscribeLink = getUnsubscribeLink(userEmail);
+  return html + `
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e5e5;">
+    <p style="font-size:12px;line-height:18px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;color:#666;margin-top:16px;margin-bottom:16px">
+      You're receiving this email because you signed up for MissNotes. 
+      <a href="${unsubscribeLink}" style="color:#067df7;text-decoration-line:none">Unsubscribe</a> from these emails.
+    </p>
+  `;
+}
+
 // Day 1 - Struggling to keep up in meetings?
 function getDay1mail(userName = "") {
   return {
@@ -190,14 +210,15 @@ async function setupEmail() {
 async function sendDay1Email(userEmail, userName = "") {
   try {
     const emailContent = getDay1mail(userName);
+    const htmlWithFooter = addUnsubscribeFooter(emailContent.html, userEmail);
     const result = await resend.emails.send({
       from: "Sabyr from MissNotes <sabyr@missnotes.com>",
       to: userEmail,
       subject: emailContent.subject,
-      html: emailContent.html,
+      html: htmlWithFooter,
       replyTo: "nurgasab@gmail.com",
     });
-    console.log("Day 1 welcome email sent successfully:", result);
+    console.log("Day 1 welcome email sent successfully to:", userEmail);
     return result;
   } catch (error) {
     console.error("Error sending Day 1 welcome email:", error);
@@ -208,14 +229,15 @@ async function sendDay1Email(userEmail, userName = "") {
 async function sendDay2Email(userEmail, userName = "") {
   try {
     const emailContent = getDay2Email(userName);
+    const htmlWithFooter = addUnsubscribeFooter(emailContent.html, userEmail);
     const result = await resend.emails.send({
       from: "Sabyr from MissNotes <sabyr@missnotes.com>",
       to: userEmail,
       subject: emailContent.subject,
-      html: emailContent.html,
+      html: htmlWithFooter,
       replyTo: "nurgasab@gmail.com",
     });
-    console.log("Day 2 welcome email sent successfully:", result);
+    console.log("Day 2 welcome email sent successfully:", userEmail);
     return result;
   } catch (error) {
     console.error("Error sending Day 2 welcome email:", error);
@@ -226,14 +248,15 @@ async function sendDay2Email(userEmail, userName = "") {
 async function sendDay3Email(userEmail, userName = "") {
   try {
     const emailContent = getDay3Email(userName);
+    const htmlWithFooter = addUnsubscribeFooter(emailContent.html, userEmail);
     const result = await resend.emails.send({
       from: "Sabyr from MissNotes <sabyr@missnotes.com>",
       to: userEmail,
       subject: emailContent.subject,
-      html: emailContent.html,
+      html: htmlWithFooter,
       replyTo: "nurgasab@gmail.com",
     });
-    console.log("Day 3 welcome email sent successfully:", result);
+    console.log("Day 3 welcome email sent successfully:", userEmail);
     return result;
   } catch (error) {
     console.error("Error sending Day 3 welcome email:", error);
@@ -244,14 +267,15 @@ async function sendDay3Email(userEmail, userName = "") {
 async function sendDay4Email(userEmail, userName = "") {
   try {
     const emailContent = getDay4Email(userName);
+    const htmlWithFooter = addUnsubscribeFooter(emailContent.html, userEmail);
     const result = await resend.emails.send({
       from: "Sabyr from MissNotes <sabyr@missnotes.com>",
       to: userEmail,
       subject: emailContent.subject,
-      html: emailContent.html,
+      html: htmlWithFooter,
       replyTo: "nurgasab@gmail.com",
     });
-    console.log("Day 4 welcome email sent successfully:", result);
+    console.log("Day 4 welcome email sent successfully:", userEmail);
     return result;
   } catch (error) {
     console.error("Error sending Day 4 welcome email:", error);
@@ -262,14 +286,15 @@ async function sendDay4Email(userEmail, userName = "") {
 async function sendDay5Email(userEmail, userName = "") {
   try {
     const emailContent = getDay5Email(userName);
+    const htmlWithFooter = addUnsubscribeFooter(emailContent.html, userEmail);
     const result = await resend.emails.send({
       from: "Sabyr from MissNotes <sabyr@missnotes.com>",
       to: userEmail,
       subject: emailContent.subject,
-      html: emailContent.html,
+      html: htmlWithFooter,
       replyTo: "nurgasab@gmail.com",
     });
-    console.log("Day 5 welcome email sent successfully:", result);
+    console.log("Day 5 welcome email sent successfully:", userEmail);
     return result;
   } catch (error) {
     console.error("Error sending Day 5 welcome email:", error);
@@ -280,14 +305,15 @@ async function sendDay5Email(userEmail, userName = "") {
 async function sendDay6Email(userEmail, userName = "") {
   try {
     const emailContent = getDay6Email(userName);
+    const htmlWithFooter = addUnsubscribeFooter(emailContent.html, userEmail);
     const result = await resend.emails.send({
       from: "Sabyr from MissNotes <sabyr@missnotes.com>",
       to: userEmail,
       subject: emailContent.subject,
-      html: emailContent.html,
+      html: htmlWithFooter,
       replyTo: "nurgasab@gmail.com",
     });
-    console.log("Day 6 welcome email sent successfully:", result);
+    console.log("Day 6 welcome email sent successfully:", userEmail);
     return result;
   } catch (error) {
     console.error("Error sending Day 6 welcome email:", error);
@@ -298,14 +324,15 @@ async function sendDay6Email(userEmail, userName = "") {
 async function sendDay7Email(userEmail, userName = "") {
   try {
     const emailContent = getDay7Email(userName);
+    const htmlWithFooter = addUnsubscribeFooter(emailContent.html, userEmail);
     const result = await resend.emails.send({
       from: "Sabyr from MissNotes <sabyr@missnotes.com>",
       to: userEmail,
       subject: emailContent.subject,
-      html: emailContent.html,
+      html: htmlWithFooter,
       replyTo: "nurgasab@gmail.com",
     });
-    console.log("Day 7 welcome email sent successfully:", result);
+    console.log("Day 7 welcome email sent successfully:", userEmail);
     return result;
   } catch (error) {
     console.error("Error sending Day 7 welcome email:", error);
@@ -315,11 +342,3 @@ async function sendDay7Email(userEmail, userName = "") {
 
 // Export functions for use in other files
 export { getDay1mail, sendDay1Email, setupEmail, getDay2Email, sendDay2Email, getDay3Email, sendDay3Email, getDay4Email, sendDay4Email, getDay5Email, sendDay5Email, getDay6Email, sendDay6Email, getDay7Email, sendDay7Email };
-
-// sendDay1Email("kabduldinova.aiym111@gmail.com", "Aiym");
-// sendDay2Email("kabduldinova.aiym111@gmail.com", "Aiym");
-// sendDay3Email("kabduldinova.aiym111@gmail.com", "Aiym");
-// sendDay4Email("kabduldinova.aiym111@gmail.com", "Aiym");
-// sendDay5Email("kabduldinova.aiym111@gmail.com", "Aiym");
-// sendDay6Email("kabduldinova.aiym111@gmail.com", "Aiym");
-sendDay7Email("kabduldinova.aiym111@gmail.com", "Aiym");

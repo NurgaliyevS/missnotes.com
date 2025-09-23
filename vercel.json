@@ -1,0 +1,13 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/email-sequence",
+      "schedule": "0 * * * *"
+    }
+  ],
+  "functions": {
+    "pages/api/cron/email-sequence.js": {
+      "maxDuration": 60
+    }
+  }
+}

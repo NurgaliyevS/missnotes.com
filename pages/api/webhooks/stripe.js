@@ -174,7 +174,21 @@ export default async function handler(req, res) {
       );
     } else {
       console.log("Creating new user:", payload.email);
-      await User.create(payload);
+      user = await User.create(payload);
+    }
+    
+    // Pause email sequence since user has purchased
+    if (user && user._id) {
+      try {
+        await User.findByIdAndUpdate(
+          user._id,
+          { $set: { email_sequence_paused: true } }
+        );
+        console.log("Email sequence paused for user:", payload.email);
+      } catch (error) {
+        console.error("Error pausing email sequence:", error);
+        // Don't fail the webhook if email sequence pause fails
+      }
     }
     
     console.log("User updated/created successfully");
