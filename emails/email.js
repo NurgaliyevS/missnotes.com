@@ -340,5 +340,89 @@ async function sendDay7Email(userEmail, userName = "") {
   }
 }
 
+// Confirmation email for new plan purchase
+function getPlanConfirmationEmail(userName = "", planName = "", isTrial = false, trialEndsAt = null) {
+  const isProPlan = planName === "pro";
+  const isOneYearPass = planName === "one-year-pass";
+  
+  let subject, planDescription;
+  
+  if (isTrial) {
+    subject = "Your MissNotes trial is ready! 🎉";
+    planDescription = "Thanks for signing up! Your free trial just started.";
+  } else if (isProPlan) {
+    subject = "Welcome to MissNotes Pro! 🎉";
+    planDescription = "Thank you for joining!";
+  } else if (isOneYearPass) {
+    subject = "Welcome to MissNotes! 🎉";
+    planDescription = "Thank you for joining!";
+  } else {
+    subject = "Welcome to MissNotes! 🎉";
+    planDescription = "Thank you for joining!";
+  }
+
+  const trialInfo = isTrial && trialEndsAt ? `
+    <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">
+      <strong>Your trial ends on ${new Date(trialEndsAt).toLocaleDateString()}</strong>
+    </p>
+  ` : '';
+
+  return {
+    subject,
+    html: `
+      <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">Hi ${userName},</p>
+      
+      <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">${planDescription}</p>
+      
+      ${trialInfo}
+      
+      <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">
+        <a href="https://missnotes.com/upload" style="color:#067df7;text-decoration-line:none" target="_blank">Upload your meeting</a>
+      </p>
+      
+      <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">
+        <strong>What you get:</strong>
+      </p>
+      
+      <ul style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">
+        <li>Turn any meeting into notes</li>
+        <li>See the key decisions</li>
+        <li>Action items with deadlines</li>
+        <li>Share with team members</li>
+      </ul>
+      
+      ${isTrial ? `
+      <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">
+        <strong>P.S.: Why did you sign up? What brought you here?</strong>
+      </p>
+      ` : ''}
+      
+      <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">Have any questions? "Reply" and let me know. I read and reply to every email.</p>
+      
+      <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">Bye!<br>Sabyr</p>
+    `,
+  };
+}
+
+// Function to send plan confirmation email
+async function sendPlanConfirmationEmail(userEmail, userName = "", planName = "", isTrial = false, trialEndsAt = null) {
+  try {
+    const emailContent = getPlanConfirmationEmail(userName, planName, isTrial, trialEndsAt);
+    const htmlWithFooter = addUnsubscribeFooter(emailContent.html, userEmail);
+    const result = await resend.emails.send({
+      from: "Sabyr from MissNotes <sabyr@missnotes.com>",
+      to: userEmail,
+      subject: emailContent.subject,
+      html: htmlWithFooter,
+      replyTo: "nurgasab@gmail.com",
+    });
+    console.log("Plan confirmation email sent successfully to:", userEmail);
+    return result;
+  } catch (error) {
+    console.error("Error sending plan confirmation email:", error);
+    throw error;
+  }
+}
+
 // Export functions for use in other files
-export { getDay1mail, sendDay1Email, setupEmail, getDay2Email, sendDay2Email, getDay3Email, sendDay3Email, getDay4Email, sendDay4Email, getDay5Email, sendDay5Email, getDay6Email, sendDay6Email, getDay7Email, sendDay7Email };
+export { getDay1mail, sendDay1Email, setupEmail, getDay2Email, sendDay2Email, getDay3Email, sendDay3Email, getDay4Email, sendDay4Email, getDay5Email, sendDay5Email, getDay6Email, sendDay6Email, getDay7Email, sendDay7Email, getPlanConfirmationEmail, sendPlanConfirmationEmail };

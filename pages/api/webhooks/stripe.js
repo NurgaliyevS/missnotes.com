@@ -3,6 +3,7 @@ import { buffer } from "micro";
 import User from "@/backend/user";
 import connectMongoDB from "@/backend/mongodb";
 import sendTelegramNotification from "@/utils/sendTelegramNotification";
+import { sendPlanConfirmationEmail } from "@/emails/email";
 
 // Use test key for local development, production key for production
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -188,6 +189,23 @@ export default async function handler(req, res) {
       } catch (error) {
         console.error("Error pausing email sequence:", error);
         // Don't fail the webhook if email sequence pause fails
+      }
+    }
+    
+    // Send confirmation email for new plan purchase or trial start
+    if (payload.email) {
+      try {
+        await sendPlanConfirmationEmail(
+          payload.email,
+          payload.customer_name || "",
+          payload.variant_name,
+          payload.is_in_trial,
+          payload.trial_ends_at
+        );
+        console.log("Confirmation email sent successfully to:", payload.email);
+      } catch (error) {
+        console.error("Error sending confirmation email:", error);
+        // Don't fail the webhook if email sending fails
       }
     }
     
