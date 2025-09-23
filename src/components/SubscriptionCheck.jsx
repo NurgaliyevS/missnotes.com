@@ -232,7 +232,7 @@ export default function SubscriptionCheck({ children }) {
                 <div className="w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center flex-shrink-0 text-primary">
                   <Check className="w-2.5 h-2.5 md:w-3 md:h-3" />
                 </div>
-                <span className="text-sm md:text-base">7 day free trial (cancel anytime)</span>
+                <span className="text-sm md:text-base">3 day free trial (cancel anytime)</span>
               </li>
               <li className="flex items-center gap-3">
                 <div className="w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center flex-shrink-0 text-primary">
@@ -272,7 +272,7 @@ export default function SubscriptionCheck({ children }) {
                   <span className="text-xs md:text-sm">Processing...</span>
                 </div>
               ) : (
-                "Start 7 Day Free Trial"
+                "Start Free Trial"
               )}
             </Button>
           </div>

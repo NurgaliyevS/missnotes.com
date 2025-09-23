@@ -16,13 +16,13 @@ export default function PricingSection() {
       period: "per month",
       description: "For active ADHDers",
       features: [
-        "7 day free trial (cancel anytime)",
+        "3 day free trial (cancel anytime)",
         "Unlimited meetings",
         "Unlimited transcriptions",
         "PDF export",
         "Link sharing"
       ],
-      cta: "Start 7 Day Free Trial",
+      cta: "Start Free Trial",
       popular: true,
     },
     {

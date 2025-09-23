@@ -55,6 +55,6 @@ export const defaultProPlan = {
     "Custom branding",
     "Priority support",
   ],
-  cta: "Start 7 Day Free Trial",
+  cta: "Start Free Trial",
   popular: true,
 };

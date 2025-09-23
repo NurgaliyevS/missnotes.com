@@ -20,7 +20,7 @@ function getDay1mail(userName = "") {
       
       <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">Upload meeting audio. Get notes & action items in 2 minutes. Share instantly.</p>
       
-      <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px"><a href="https://missnotes.com/upload" style="color:#067df7;text-decoration-line:none" target="_blank">Start 7-Day Free Trial</a></p>
+      <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px"><a href="https://missnotes.com/upload" style="color:#067df7;text-decoration-line:none" target="_blank">Start 3-Day Free Trial</a></p>
       
       <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px"><strong>P.S.: Why did you sign up? What brought you here?</strong></p>
       

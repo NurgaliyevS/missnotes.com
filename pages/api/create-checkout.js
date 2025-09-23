@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       'pro': {
         price: 700, // $7.00 in cents
         interval: 'month',
-        trial_period_days: 7,
+        trial_period_days: 3,
         description: "For ADHDers. Unlimited meetings, PDF export, custom branding, priority support."
       },
       'one-year-pass': {

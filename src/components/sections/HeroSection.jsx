@@ -30,7 +30,7 @@ export default function HeroSection() {
                 className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 w-full sm:w-auto shadow-soft hover:shadow-glow h-12 sm:h-14 flex items-center justify-center rounded-lg font-semibold"
               >
                 <ArrowRight className="h-4 w-4" />
-                Start 7 Day Free Trial
+                Start Free Trial
               </Button>
               </Link>
               <Link href="/upload" className="w-full sm:w-auto">

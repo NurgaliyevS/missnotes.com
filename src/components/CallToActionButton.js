@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function CallToActionButton({
-  children = 'Start 7 Day Free Trial',
+  children = 'Start Free Trial',
 }) {
   return (
     <Link href="/upload" className="w-full sm:w-auto">
