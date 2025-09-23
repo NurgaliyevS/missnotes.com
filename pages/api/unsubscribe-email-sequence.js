@@ -1,4 +1,3 @@
-import { optOutEmailSequence } from "@/lib/emailSequenceController";
 import connectMongoDB from "@/backend/mongodb";
 import User from "@/backend/user";
 
@@ -61,7 +60,9 @@ export default async function handler(req, res) {
     }
 
     // Opt out the user
-    await optOutEmailSequence(user._id);
+    await User.findByIdAndUpdate(user._id, {
+      $set: { email_sequence_opted_out: true }
+    });
 
     console.log(`User ${email} unsubscribed from email sequence`);
 
