@@ -58,9 +58,7 @@ function getDay3Email(userName = "") {
     return {
       subject: "Meetings sucking the life out of you?",
       html: `
-        <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">Hi ${userName}.</p>
-        
-        <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">You have meetings today. Your brain is tired.</p>
+        <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">You have meetings today. Your brain is tired, ${userName}.</p>
         
         <p style="font-size:14px;line-height:24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;margin-top:16px;margin-bottom:16px">You can't remember what happened in meeting <strong>#1</strong>.</p>
         
