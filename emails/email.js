@@ -191,21 +191,6 @@ function getDay7Email(userName = "") {
   };
 }
 
-async function setupEmail() {
-  try {
-    const result = await resend.emails.send({
-      from: "Sabyr Nurgaliyev <sabyr@missnotes.com>",
-      to: "kabduldinova.aiym111@gmail.com",
-      subject: "Hello World",
-      html: "<p>Congrats on sending your <strong>first email</strong>!</p>",
-      replyTo: "nurgasab@gmail.com",
-    });
-    console.log("Email sent successfully:", result);
-  } catch (error) {
-    console.error("Error sending email:", error);
-  }
-}
-
 // Function to send Day 1 welcome email
 async function sendDay1Email(userEmail, userName = "") {
   try {
@@ -425,4 +410,4 @@ async function sendPlanConfirmationEmail(userEmail, userName = "", planName = ""
 }
 
 // Export functions for use in other files
-export { getDay1mail, sendDay1Email, setupEmail, getDay2Email, sendDay2Email, getDay3Email, sendDay3Email, getDay4Email, sendDay4Email, getDay5Email, sendDay5Email, getDay6Email, sendDay6Email, getDay7Email, sendDay7Email, getPlanConfirmationEmail, sendPlanConfirmationEmail };
+export { getDay1mail, sendDay1Email, getDay2Email, sendDay2Email, getDay3Email, sendDay3Email, getDay4Email, sendDay4Email, getDay5Email, sendDay5Email, getDay6Email, sendDay6Email, getDay7Email, sendDay7Email, getPlanConfirmationEmail, sendPlanConfirmationEmail };
