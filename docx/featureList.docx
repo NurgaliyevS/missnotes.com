@@ -1,0 +1,26 @@
+Meeting Notes Template - Feature List
+
+Feature 1: Static Template Landing Pages
+- Create static Next.js template landing pages
+- Add SEO metadata (title, description, keywords)
+- Include template preview section
+- Add download buttons for PDF and DOCX formats
+- Implement responsive design
+
+Feature 2: Static Template Files
+- Create static PDF template files
+- Create static DOCX template files
+- Organize files in /public directory
+- Add template metadata and descriptions
+
+Feature 3: SEO and Accessibility
+- Add FAQ section with common questions
+- Implement Schema markup for search engines
+- Add proper meta tags and Open Graph data
+- Ensure accessibility compliance
+
+Tech Stack:
+- Next.js (Pages Router)
+- React components
+- Tailwind CSS for styling
+- Static file generation

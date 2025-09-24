@@ -32,18 +32,25 @@ export default function Footer() {
           >
             Features
           </Link>
-        </div>
-
-        <div className="flex flex-col gap-3 flex-1 text-center md:text-right">
-          <span className="font-bold text-xs uppercase tracking-wider text-gray-500">
-            Support
-          </span>
           <a
             href="mailto:nurgasab@gmail.com"
             className="text-sm hover:text-primary transition-colors"
           >
             Contact Support
           </a>
+        </div>
+
+        <div className="flex flex-col gap-3 flex-1 text-center md:text-right">
+          <span className="font-bold text-xs uppercase tracking-wider text-gray-500">
+            Resources
+          </span>
+
+          <Link
+            href="/templates/meeting-notes-template"
+            className="text-sm hover:text-primary transition-colors"
+          >
+            Templates
+          </Link>
           <div className="text-xs text-slate-500 mt-4 md:mt-auto">
             © 2025 MissNotes. All rights reserved.
           </div>
