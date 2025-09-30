@@ -33,6 +33,12 @@ export default function Footer() {
             Features
           </Link>
           <a
+            href="/api/create-portal-session"
+            className="text-sm hover:text-primary transition-colors"
+          >
+            Manage Subscription
+          </a>
+          <a
             href="mailto:nurgasab@gmail.com"
             className="text-sm hover:text-primary transition-colors"
           >
