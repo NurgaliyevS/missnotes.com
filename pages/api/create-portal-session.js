@@ -78,17 +78,8 @@ export default async function handler(req, res) {
       );
     }
 
-    // Verify customer has subscriptions before creating portal session
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customerId,
-      limit: 1
-    });
-
-    if (subscriptions.data.length === 0) {
-      return res.status(400).json({ 
-        message: "No active subscription found. Please subscribe first." 
-      });
-    }
+    // Note: We allow portal access for all customers, even without active subscriptions
+    // This lets users view their payment methods, invoices, and billing history
 
     // Create a Stripe Customer Portal session
     const portalSession = await stripe.billingPortal.sessions.create({
