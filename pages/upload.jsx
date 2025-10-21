@@ -23,7 +23,6 @@ import {
   processAudioInChunks 
 } from '@/lib/fileChunking';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import SubscriptionCheck from '@/components/SubscriptionCheck';
 import { useSession } from 'next-auth/react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -608,8 +607,7 @@ const removeFile = () => {
     <>
     <Navbar />
     <ProtectedRoute>
-      <SubscriptionCheck>
-        <div className="min-h-screen bg-[#F3F4EF]  py-12 px-4">
+      <div className="min-h-screen bg-[#F3F4EF]  py-12 px-4">
           <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
@@ -1128,7 +1126,6 @@ const removeFile = () => {
         </Card>
       </div>
     </div>
-      </SubscriptionCheck>
     </ProtectedRoute>
     <Footer />
     </>

@@ -1,49 +1,7 @@
 import Link from "next/link";
 import { NotebookPen, Upload, Home } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useState, useEffect, useRef } from "react";
 
 export default function Footer() {
-  const { data: session } = useSession();
-  const [hasSubscription, setHasSubscription] = useState(false);
-  const subscriptionCache = useRef(null);
-  const lastCheckedEmail = useRef(null);
-
-  useEffect(() => {
-    if (session?.user?.email) {
-      // Only check if we haven't checked for this email yet, or if the email changed
-      if (lastCheckedEmail.current !== session.user.email) {
-        checkSubscription();
-      } else if (subscriptionCache.current !== null) {
-        // Use cached data
-        setHasSubscription(subscriptionCache.current);
-      }
-    } else {
-      setHasSubscription(false);
-      subscriptionCache.current = null;
-      lastCheckedEmail.current = null;
-    }
-  }, [session]);
-
-  const checkSubscription = async () => {
-    try {
-      const response = await fetch("/api/user/subscription-status");
-      if (response.ok) {
-        const data = await response.json();
-        // Only show manage subscription if user has a paid plan (not free)
-        const hasPaidPlan = data.variant_name && data.variant_name !== "free" && data.customer_id;
-        setHasSubscription(hasPaidPlan);
-        // Cache the result
-        subscriptionCache.current = hasPaidPlan;
-        lastCheckedEmail.current = session?.user?.email;
-      }
-    } catch (error) {
-      console.error("Error checking subscription:", error);
-      setHasSubscription(false);
-      subscriptionCache.current = false;
-      lastCheckedEmail.current = session?.user?.email;
-    }
-  };
   return (
     <section className="py-4 px-4 bg-[#F3F4EF] border-t border-gray-200">
       <div className="flex flex-col md:flex-row gap-8 max-w-5xl mx-auto py-6 md:py-10">
@@ -63,25 +21,11 @@ export default function Footer() {
             Product
           </span>
           <Link
-            href="/#pricing"
-            className="text-sm hover:text-primary transition-colors"
-          >
-            Pricing
-          </Link>
-          <Link
             href="/#features"
             className="text-sm hover:text-primary transition-colors"
           >
             Features
           </Link>
-          {hasSubscription && (
-            <a
-              href="/api/create-portal-session"
-              className="text-sm hover:text-primary transition-colors"
-            >
-              Manage Subscription
-            </a>
-          )}
           <a
             href="mailto:nurgasab@gmail.com"
             className="text-sm hover:text-primary transition-colors"

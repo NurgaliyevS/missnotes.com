@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Upload, Zap, Share2 } from "lucide-react";
-import { handleCheckout, defaultProPlan } from "@/lib/checkout";
 import CallToActionButton from "./CallToActionButton";
 export var DemoSection = function () {
     var steps = [

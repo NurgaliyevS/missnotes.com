@@ -5,7 +5,6 @@ import HeroSection from "@/components/sections/HeroSection";
 import FeaturesSection from "@/components/sections/FeaturesSection";
 import AboutSection from "@/components/sections/AboutSection";
 import TiredSection from "@/components/sections/TiredSection";
-import PricingSection from "@/components/PricingSection";
 // import VideoSection from "@/components/sections/VideoSection";
 import { DemoSection } from "@/components/DemoSection";
 import { CreatorSection } from "@/components/CreatorSection";
@@ -23,7 +22,6 @@ export default function Home() {
           <AboutSection />
           <TiredSection />
           <DemoSection />
-          <PricingSection />
           <CreatorSection />
           <ClosingCTASection />
           <Footer />

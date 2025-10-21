@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { handleCheckout, defaultProPlan } from "@/lib/checkout";
 import CallToActionButton from "./CallToActionButton";
 export var ClosingCTASection = function () {
     return (<section className="py-20 bg-gradient-subtle">
